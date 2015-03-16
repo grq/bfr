@@ -8,6 +8,34 @@ namespace KIMath.BooleanAlgebra
 {
     public class BooleanAlgebraHelper
     {
+        static public bool Implication(bool A, bool B)
+        {
+            return !(A == true && B == false);
+        }
+
+        static public bool CollectionAreEquals<T>(IEnumerable<T> valueA, IEnumerable<T> valueB)
+        {
+            var a = valueA.ToArray();
+            var b = valueB.ToArray();
+            if (a.Length != a.Length)
+            {
+                return false;
+            }
+            for (int i = 0; i < a.Length; i++)
+            {
+                if (!a[i].Equals(b[i]))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        static public bool Xor(bool valueA, bool valueB)
+        {
+            return valueA != valueB;
+        }
+
         static public string DecToBin(long value)
         {
             StringBuilder result = new StringBuilder();

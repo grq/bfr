@@ -205,7 +205,7 @@ namespace KIMath.BooleanAlgebra
         /// <param name="variables">Число переменных</param>
         public BooleanFunction(Int64 decimalValue, int variables)
         {
-            bool[] value = this.DecToBoolArray(decimalValue);
+            bool[] value = BooleanAlgebraHelper.DecToBoolArray(decimalValue);
             if (value.Length > Math.Pow(2, variables))
             {
                 throw new ArgumentException(string.Format("Function's value length can't be much then {0} for functions of {1} variables", Math.Pow(2, variables), variables));
@@ -274,7 +274,7 @@ namespace KIMath.BooleanAlgebra
             {
                 if (value[i].ToString() == "1")
                 {
-                    trues[c] = this.BoolArrayToString(this.SetCorrectLength(this.DecToBoolArray(i), this.Variables));
+                    trues[c] = BooleanAlgebraHelper.GetBoolArrayAsString(this.SetCorrectLength(BooleanAlgebraHelper.DecToBoolArray(i), this.Variables));
                     c++;
                 }
             }
@@ -398,7 +398,7 @@ namespace KIMath.BooleanAlgebra
             for (int i = 1; i < zhegalkinCoefficients.Length; i++)
             {
                 List<bool> values = new List<bool>() { this.Value[i] };
-                bool[] input = this.DecToBoolArray(i);
+                bool[] input = BooleanAlgebraHelper.DecToBoolArray(i);
                 // Ищем номера необходимых наборов
                 List<int> naborCoefficents = new List<int>();
                 for (int a = 0; a < input.Length; a++)
@@ -422,7 +422,7 @@ namespace KIMath.BooleanAlgebra
                             if (!ad.Contains(bd[0]))
                             {
                                 var res = ad.ToList().Concat(bd).OrderBy(p => p).ToArray();
-                                if (!combinations[curLength].Select(p => this.CollectionAreEquals(p, res)).Contains(true))
+                                if (!combinations[curLength].Select(p => BooleanAlgebraHelper.CollectionAreEquals(p, res)).Contains(true))
                                 {
                                     combinations[curLength].Add(res);
                                 }
@@ -441,12 +441,37 @@ namespace KIMath.BooleanAlgebra
                 bool result = zhegalkinCoefficients[0];
                 foreach (var val in values)
                 {
-                    result = Xor(result, val);
+                    result = BooleanAlgebraHelper.Xor(result, val);
                 }
                 zhegalkinCoefficients[i] = result;
             }
             this._zhegalkinCoefficents = zhegalkinCoefficients;
             return zhegalkinCoefficients;
+        }
+
+        private OmegaComplexityProcessor GetComplexityProcessor(LinearOrder linearOrder)
+        {
+            switch (linearOrder)
+            {
+                case LinearOrder.TrueHigherThanFalse:
+                    if (this._g0ComplexityProcessor == null)
+                    {
+                        IEnumerable<bool> boolSequence = this.GetCompactValue(linearOrder);
+                        string sequence = BooleanAlgebraHelper.GetBoolArrayAsString(boolSequence);
+                        this._g0ComplexityProcessor = new OmegaComplexityProcessor(sequence);
+                    }
+                    return this._g0ComplexityProcessor;
+                case LinearOrder.FalseHigherTheTrue:
+                    if (this._g1ComplexityProcessor == null)
+                    {
+                        IEnumerable<bool> boolSequence = this.GetCompactValue(linearOrder);
+                        string sequence = BooleanAlgebraHelper.GetBoolArrayAsString(boolSequence);
+                        this._g1ComplexityProcessor = new OmegaComplexityProcessor(sequence);
+                    }
+                    return this._g1ComplexityProcessor;
+                default:
+                    throw new Exception("Complexity proccessor couldn't be defined.");
+            }
         }
 
         public int GetOmega0(LinearOrder linearOrder)
@@ -495,7 +520,7 @@ namespace KIMath.BooleanAlgebra
                 {
                     if (this.IsComparableInputs(inputs[i], inputs[j]))
                     {
-                        if (!this.Implication(this.Value[i], this.Value[j]))
+                        if (!BooleanAlgebraHelper.Implication(this.Value[i], this.Value[j]))
                         {
                             this._isMonotone = false;
                             return false;
@@ -517,8 +542,8 @@ namespace KIMath.BooleanAlgebra
                 bool[] newSet = new bool[setNumber - i - 1];
                 for (int y = 0; y < newSet.Length; y++)
                 {
-                    newSet[y] = Xor(set[y], set[y + 1]);
-                    if (y == 0 && newSet[y] && MathHelper.DecToBoolArray(i + 1).Where(x => x).ToList().Count > 1)
+                    newSet[y] = BooleanAlgebraHelper.Xor(set[y], set[y + 1]);
+                    if (y == 0 && newSet[y] && BooleanAlgebraHelper.DecToBoolArray(i + 1).Where(x => x).ToList().Count > 1)
                         return false;
                 }
                 set = newSet;
@@ -528,28 +553,6 @@ namespace KIMath.BooleanAlgebra
                 }
             }
             return result;
-        }
-
-        //private bool IsLinearFunction()
-        //{
-        //    int[] uninteresting = new int[this.Variables];
-        //    for (int i = 0; i < this.Variables; i++)
-        //    {
-        //        uninteresting[i] = (int)Math.Pow(2, i);
-        //    }
-        //    for (int i = 1; i < this._zhegalkinCoefficents.Length; i++)
-        //    {
-        //        if (!uninteresting.Contains(i) && this._zhegalkinCoefficents[i])
-        //        {
-        //            return false;
-        //        }
-        //    }
-        //    return true;
-        //}
-
-        private bool Implication(bool A, bool B)
-        {
-            return !(A == true && B == false);
         }
 
         private bool IsComparableInputs(bool[] inputA, bool[] inputB)
@@ -574,7 +577,7 @@ namespace KIMath.BooleanAlgebra
             List<bool[]> result = new List<bool[]>();
             for (int i = 0; i < Math.Pow(2, this.Variables); i++)
             {
-                result.Add(this.SetCorrectLength(this.DecToBoolArray(i), this.Variables));
+                result.Add(this.SetCorrectLength(BooleanAlgebraHelper.DecToBoolArray(i), this.Variables));
             }
             return result;
         }
@@ -603,134 +606,16 @@ namespace KIMath.BooleanAlgebra
             return result.ToArray();
         }
 
-        private bool[] DecToBoolArray(Int64 value)
-        {
-            List<bool> result = new List<bool>();
-            while (value > 1)
-            {
-                result.Insert(0, ((value % 2) == 1));
-                value = value / 2;
-            }
-            result.Insert(0, (value == 1));
-            return result.ToArray();
-        }
-
-        private int BoolArrayToInt(bool[] value)
-        {
-            int result = 0;
-            for (int i = 0; i < value.Length; i++)
-            {
-                if (value[value.Length - i - 1])
-                {
-                    result += Convert.ToInt32(Math.Pow(2, i));
-                }
-            }
-            return result;
-        }
-
         private bool[] GetPostClass()
         {
             List<bool> result = new List<bool>();
-            if (this.IsSelfDual)
-            {
-                result.Add(true);
-            }
-            else
-            {
-                result.Add(false);
-            }
-            if (this.IsPreserving0)
-            {
-                result.Add(true);
-            }
-            else
-            {
-                result.Add(false);
-            }
-            if (this.IsPreserving1)
-            {
-                result.Add(true);
-            }
-            else
-            {
-                result.Add(false);
-            }
-            if (this.IsLinear)
-            {
-                result.Add(true);
-            }
-            else
-            {
-                result.Add(false);
-            }
-            if (this.IsMonotone)
-            {
-                result.Add(true);
-            }
-            else
-            {
-                result.Add(false);
-            }
+            result.Add(this.IsSelfDual);
+            result.Add(this.IsPreserving0);
+            result.Add(this.IsPreserving1);
+            result.Add(this.IsLinear);
+            result.Add(this.IsMonotone);
             this._postClass = result.ToArray();
             return this._postClass;
-        }
-
-        private bool CollectionAreEquals<T>(IEnumerable<T> valueA, IEnumerable<T> valueB)
-        {
-            var a = valueA.ToArray();
-            var b = valueB.ToArray();
-            if (a.Length != a.Length)
-            {
-                return false;
-            }
-            for (int i = 0; i < a.Length; i++)
-            {
-                if (!a[i].Equals(b[i]))
-                {
-                    return false;
-                }
-            }
-            return true;
-        }
-
-        private bool Xor(bool valueA, bool valueB)
-        {
-            return valueA != valueB;
-        }
-
-        private string BoolArrayToString(bool[] input)
-        {
-            StringBuilder result = new StringBuilder();
-            foreach (bool value in input)
-            {
-                result.Append(value ? '1' : '0');
-            }
-            return result.ToString();
-        }
-
-        private OmegaComplexityProcessor GetComplexityProcessor(LinearOrder linearOrder)
-        {
-            switch (linearOrder)
-            {
-                case LinearOrder.TrueHigherThanFalse:
-                    if (this._g0ComplexityProcessor == null)
-                    {
-                        IEnumerable<bool> boolSequence = this.GetCompactValue(linearOrder);
-                        string sequence = BooleanAlgebraHelper.GetBoolArrayAsString(boolSequence);
-                        this._g0ComplexityProcessor = new OmegaComplexityProcessor(sequence);
-                    }
-                    return this._g0ComplexityProcessor;
-                case LinearOrder.FalseHigherTheTrue:
-                    if (this._g1ComplexityProcessor == null)
-                    {
-                        IEnumerable<bool> boolSequence = this.GetCompactValue(linearOrder);
-                        string sequence = BooleanAlgebraHelper.GetBoolArrayAsString(boolSequence);
-                        this._g1ComplexityProcessor = new OmegaComplexityProcessor(sequence);
-                    }
-                    return this._g1ComplexityProcessor;
-                default:
-                    throw new Exception("Complexity proccessor couldn't be defined.");
-            }
         }
 
         #endregion
@@ -867,17 +752,12 @@ namespace KIMath.BooleanAlgebra
 
         public override string ToString()
         {
-            return BoolArrayToString(this.Value);
+            return BooleanAlgebraHelper.GetBoolArrayAsString(this.Value);
         }
 
         public override bool Equals(object obj)
         {
-            return this.CollectionAreEquals(this.Value, ((BooleanFunction)obj).Value);
-        }
-
-        public override int GetHashCode()
-        {
-            return this.BoolArrayToInt(this.Value);
+            return BooleanAlgebraHelper.CollectionAreEquals(this.Value, ((BooleanFunction)obj).Value);
         }
 
         #endregion
