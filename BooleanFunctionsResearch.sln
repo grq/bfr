@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KIMath.BooleanAlgebra", "KIMath.BooleanAlgebra\KIMath.BooleanAlgebra.csproj", "{F215A23D-00AA-4671-9B38-0EB0071D2C3D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KIMath.ResearchConsole", "KIMath.ResearchConsole\KIMath.ResearchConsole.csproj", "{CF5A46E0-B3FD-4E94-8217-AA510F5ACA33}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F215A23D-00AA-4671-9B38-0EB0071D2C3D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F215A23D-00AA-4671-9B38-0EB0071D2C3D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F215A23D-00AA-4671-9B38-0EB0071D2C3D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F215A23D-00AA-4671-9B38-0EB0071D2C3D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CF5A46E0-B3FD-4E94-8217-AA510F5ACA33}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CF5A46E0-B3FD-4E94-8217-AA510F5ACA33}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CF5A46E0-B3FD-4E94-8217-AA510F5ACA33}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CF5A46E0-B3FD-4E94-8217-AA510F5ACA33}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
