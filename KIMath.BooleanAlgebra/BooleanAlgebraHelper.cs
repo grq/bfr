@@ -180,6 +180,19 @@ namespace KIMath.BooleanAlgebra
             return (from nabor in inputs select BoolArrayToInt(nabor)).ToList();
         }
 
+        static private int BoolArrayToInt(bool[] value)
+        {
+            int result = 0;
+            for (int i = 0; i < value.Length; i++)
+            {
+                if (value[value.Length - i - 1])
+                {
+                    result += Convert.ToInt32(Math.Pow(2, i));
+                }
+            }
+            return result;
+        }
+
         static public string GetBoolArrayAsString(IEnumerable<bool> value)
         {
             StringBuilder sb = new StringBuilder();

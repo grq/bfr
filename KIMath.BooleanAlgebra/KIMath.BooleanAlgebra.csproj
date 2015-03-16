@@ -39,7 +39,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BooleanAlgebraHelper.cs" />
     <Compile Include="BooleanFunction.cs" />
+    <Compile Include="LinearOrder.cs" />
+    <Compile Include="OmegaComplexityProcessor.cs" />
+    <Compile Include="PostProperty.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
