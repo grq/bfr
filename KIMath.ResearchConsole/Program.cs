@@ -11,13 +11,30 @@ namespace KIMath.ResearchConsole
     {
         static void Main(string[] args)
         {
-            string[] selfDualInputs = new string[] { "10010110" };
-            foreach (string input in selfDualInputs)
+            for (int i = 0; i < 256;i++ )
             {
-                BooleanFunction function = new BooleanFunction(input, (int)Math.Log(input.Length, 2));
-                Console.WriteLine(function.IsSelfDual);
+                BooleanFunction f = new BooleanFunction(i, 3);
+                if (f.IsLinear)
+                    Console.WriteLine(f);
             }
-            Console.ReadKey();
+
+
+
+
+                Console.ReadKey();
+        }
+
+        static void HasRepeat(string[] arr)
+        {
+            for(int i = 0;i<arr.Length - 1;i++)
+            {
+                for (int j = i+1; j < arr.Length; j++)
+                {
+                    if (arr[i] == arr[j])
+                        Console.WriteLine("ERROR: " + arr[i] + ". INDEX: " + (i + 1) + ", " + (j + 1));
+                }
+            }
+            Console.WriteLine("GOOD");
         }
     }
 }

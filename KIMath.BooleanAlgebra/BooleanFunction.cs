@@ -534,6 +534,7 @@ namespace KIMath.BooleanAlgebra
 
         private bool IsLinearFunction()
         {
+            /* Метод треугольника */
             bool result = true;
             bool[] set = this.Value;
             int setNumber = (int)Math.Pow(2, this.Variables);
