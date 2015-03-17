@@ -188,30 +188,35 @@ namespace KIMath.BooleanAlgebraTests
         /// Свойство "Линейность" для функции может быть корректно определена
         /// </summary>
         [TestMethod]
-        public void Preserving1PropertyCalculatedCorrectly()
+        public void LinearPropertyCalculatedCorrectly()
+        {
+            Assert.AreEqual(true, true);
+        }
+
+        /// <summary>
+        /// Свойство "Монотонность" для функции может быть корректно определена
+        /// </summary>
+        [TestMethod]
+        public void MonotonePropertyCalculatedCorrectly()
         {
             // Множество удовлетворяющих функций, проверенных "на бумаге"
             string[] positiveInputs = new string[] { 
-                "11010101", "01010101", "10101011", "10100001", "01110101", "10101001", "11000101", "10101111", 
-                "0101100100101101", "0101010101010101", "0101100101110111", "1101100110111011", "0110001010001011", 
-                "0100000000000111", "1011111101010101", "0101110101000001", "0100111010101011", "1011001100010111",
+                "01010101", "00010111", "01110111", "00000101", "01010111", "01011111", "00010001", "00111111", "00000000", "11111111",
             };
             foreach (string input in positiveInputs)
             {
                 BooleanFunction function = new BooleanFunction(input, (int)Math.Log(input.Length, 2));
-                Assert.AreEqual(true, function.IsPreserving1);
+                Assert.AreEqual(true, function.IsMonotone);
             }
 
             // Множество НЕ удовлетворяющих функций, проверенных "на бумаге"
             string[] negativeInputs = new string[] { 
-                "01101100", "11000100", "01010000", "10101010", "10101000", "01010110", "10110100", "01011010", 
-                "0111010000100000", "0101010110100010", "0110000100111110", "1011000111111100", "0001110000000000", 
-                "1100100010001000", "0000101110000100", "0111000011001100", "0101111110100000", "0110111110110000",
+                "10010010", "00110001", "00110010", "11011111", "01001101", "01100101", "01000010", "01110000", 
             };
             foreach (string input in negativeInputs)
             {
                 BooleanFunction function = new BooleanFunction(input, (int)Math.Log(input.Length, 2));
-                Assert.AreEqual(false, function.IsPreserving1);
+                Assert.AreEqual(false, function.IsMonotone);
             }
         }
     }
