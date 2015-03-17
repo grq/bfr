@@ -199,23 +199,61 @@ namespace KIMath.BooleanAlgebraTests
         [TestMethod]
         public void MonotonePropertyCalculatedCorrectly()
         {
-            // Множество удовлетворяющих функций, проверенных "на бумаге"
-            string[] positiveInputs = new string[] { 
-                "01010101", "00010111", "01110111", "00000101", "01010111", "01011111", "00010001", "00111111", "00000000", "11111111",
+            /* Множество удовлетворяющих свойству функций, проверенных "на бумаге"  */
+            /* Проверка произведена в файле "Documents/Функции для проверки определения свойства монотонности.docx" */
+            BooleanFunction[] positiveFunctions = new BooleanFunction[] { 
+                new BooleanFunction("01010101", 3) { Mark = "1" },
+                new BooleanFunction("00010111", 3) { Mark = "2" },
+                new BooleanFunction("01110111", 3) { Mark = "3" },
+                new BooleanFunction("00000101", 3) { Mark = "4" },
+                new BooleanFunction("01010111", 3) { Mark = "5" },
+                new BooleanFunction("01011111", 3) { Mark = "6" },
+                new BooleanFunction("00010001", 3) { Mark = "7" },
+                new BooleanFunction("00111111", 3) { Mark = "8" },
+                new BooleanFunction("00000000", 3) { Mark = "9" },
+                new BooleanFunction("11111111", 3) { Mark = "10" },
+                new BooleanFunction("0101111101011111", 4) { Mark = "11" },
+                new BooleanFunction("0001010101010101", 4) { Mark = "12" },
+                new BooleanFunction("0000001100000011", 4) { Mark = "13" },
+                new BooleanFunction("0001011111111111", 4) { Mark = "14" },
+                new BooleanFunction("0000111111111111", 4) { Mark = "15" },
+                new BooleanFunction("0000001101010111", 4) { Mark = "16" },
+                new BooleanFunction("0000011100001111", 4) { Mark = "17" },
+                new BooleanFunction("0000000100000011", 4) { Mark = "18" },
+                new BooleanFunction("0111011101110111", 4) { Mark = "19" },
+                new BooleanFunction("0101011101010111", 4) { Mark = "20" },
             };
-            foreach (string input in positiveInputs)
+            foreach (BooleanFunction function in positiveFunctions)
             {
-                BooleanFunction function = new BooleanFunction(input, (int)Math.Log(input.Length, 2));
                 Assert.AreEqual(true, function.IsMonotone);
             }
 
-            // Множество НЕ удовлетворяющих функций, проверенных "на бумаге"
-            string[] negativeInputs = new string[] { 
-                "10010010", "00110001", "00110010", "11011111", "01001101", "01100101", "01000010", "01110000", 
+            /* Множество НЕ удовлетворяющих свойству функций, проверенных "на бумаге" */
+            /* Проверка произведена в файле "Documents/Функции для проверки определения свойства монотонности.docx" */
+            BooleanFunction[] negativeFunctions = new BooleanFunction[] { 
+                new BooleanFunction("10010010", 3) { Mark = "31" },
+                new BooleanFunction("00110001", 3) { Mark = "32" },
+                new BooleanFunction("00110010", 3) { Mark = "33" },
+                new BooleanFunction("11011111", 3) { Mark = "34" },
+                new BooleanFunction("01001101", 3) { Mark = "35" },
+                new BooleanFunction("01100101", 3) { Mark = "36" },
+                new BooleanFunction("01000010", 3) { Mark = "37" },
+                new BooleanFunction("01110000", 3) { Mark = "38" },
+                new BooleanFunction("00100010", 3) { Mark = "39" },
+                new BooleanFunction("10111101", 3) { Mark = "40" },
+                new BooleanFunction("0001011101010101", 4) { Mark = "41" },
+                new BooleanFunction("1111011111111111", 4) { Mark = "42" },
+                new BooleanFunction("0000000000000100", 4) { Mark = "43" },
+                new BooleanFunction("0011001000010011", 4) { Mark = "44" },
+                new BooleanFunction("0000001001001111", 4) { Mark = "45" },
+                new BooleanFunction("0001101011011011", 4) { Mark = "46" },
+                new BooleanFunction("0000001000000000", 4) { Mark = "47" },
+                new BooleanFunction("1110010010011010", 4) { Mark = "48" },
+                new BooleanFunction("1001011001101000", 4) { Mark = "49" },
+                new BooleanFunction("1001011001101000", 4) { Mark = "50" },
             };
-            foreach (string input in negativeInputs)
+            foreach (BooleanFunction function in negativeFunctions)
             {
-                BooleanFunction function = new BooleanFunction(input, (int)Math.Log(input.Length, 2));
                 Assert.AreEqual(false, function.IsMonotone);
             }
         }
