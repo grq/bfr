@@ -13,6 +13,7 @@ namespace KIMath.BooleanAlgebraTests
         /// Функция алгебры логики может быть задана в виде массива Bool, и значения функции не будут потеряны
         /// </summary>
         [TestMethod]
+        [TestCategory("Boolean Function Constructor Test")]
         public void ConstructFunctionByBoolArray()
         {
             bool[] input = new bool[8] { false, true, true, false, false, true, true, true };
@@ -41,6 +42,7 @@ namespace KIMath.BooleanAlgebraTests
         /// Функция алгебры логики может быть задана в виде строки, и значения функции не будут потеряны
         /// </summary>
         [TestMethod]
+        [TestCategory("Boolean Function Constructor Test")]
         public void ConstructFunctionByString()
         {
             string input = "01001110";
@@ -69,6 +71,7 @@ namespace KIMath.BooleanAlgebraTests
         /// Функция алгебры логики может быть задана в виде числа, и значения функции не будут потеряны
         /// </summary>
         [TestMethod]
+        [TestCategory("Boolean Function Constructor Test")]
         public void ConstructFunctionByInteger()
         {
             int input = 45; // В двоичной системе 00101101
@@ -328,6 +331,14 @@ namespace KIMath.BooleanAlgebraTests
                 Assert.AreEqual(false, function.GetPostPropertyValue(PostProperty.Monotone));
             }
         }
+
+        #endregion
+
+        #region IMPLEMENT: DNF Test
+
+        #endregion
+
+        #region IMPLEMENT: Omega Complexity Test
 
         #endregion
     }
