@@ -190,7 +190,62 @@ namespace KIMath.BooleanAlgebraTests
         [TestMethod]
         public void LinearPropertyCalculatedCorrectly()
         {
-            Assert.AreEqual(true, true);
+            /* Множество удовлетворяющих свойству функций, проверенных "на бумаге"  */
+            /* Проверка произведена в файле "Documents/Функции для проверки определения свойства линейности.docx" */
+            BooleanFunction[] positiveFunctions = new BooleanFunction[] { 
+                new BooleanFunction("10100101", 3) { Mark = "1" },
+                new BooleanFunction("00110011", 3) { Mark = "2" },
+                new BooleanFunction("10010110", 3) { Mark = "3" },
+                new BooleanFunction("11000011", 3) { Mark = "4" },
+                new BooleanFunction("01100110", 3) { Mark = "5" },
+                new BooleanFunction("10011001", 3) { Mark = "6" },
+                new BooleanFunction("00111100", 3) { Mark = "7" },
+                new BooleanFunction("01011010", 3) { Mark = "8" },
+                new BooleanFunction("01100110", 3) { Mark = "9" },
+                new BooleanFunction("01101001", 3) { Mark = "10" },
+                new BooleanFunction("0000111111110000", 4) { Mark = "11" },
+                new BooleanFunction("0011001111001100", 4) { Mark = "12" },
+                new BooleanFunction("0011110000111100", 4) { Mark = "13" },
+                new BooleanFunction("0011110011000011", 4) { Mark = "14" },
+                new BooleanFunction("0101101001011010", 4) { Mark = "15" },
+                new BooleanFunction("0101101010100101", 4) { Mark = "16" },
+                new BooleanFunction("0110100101101001", 4) { Mark = "17" },
+                new BooleanFunction("0110100110010110", 4) { Mark = "18" },
+                new BooleanFunction("1010010110100101", 4) { Mark = "19" },
+                new BooleanFunction("1100110000110011", 4) { Mark = "20" },
+            };
+            foreach (BooleanFunction function in positiveFunctions)
+            {
+                Assert.AreEqual(true, function.IsLinear);
+            }
+            /* Множество НЕ удовлетворяющих свойству функций, проверенных "на бумаге"  */
+            /* Проверка произведена в файле "Documents/Функции для проверки определения свойства линейности.docx" */
+            BooleanFunction[] negativeFunctions = new BooleanFunction[] { 
+                new BooleanFunction("10100100", 3) { Mark = "31" },
+                new BooleanFunction("10111001", 3) { Mark = "32" },
+                new BooleanFunction("00011010", 3) { Mark = "33" },
+                new BooleanFunction("00000101", 3) { Mark = "34" },
+                new BooleanFunction("11010001", 3) { Mark = "35" },
+                new BooleanFunction("10101100", 3) { Mark = "36" },
+                new BooleanFunction("11111100", 3) { Mark = "37" },
+                new BooleanFunction("11001011", 3) { Mark = "38" },
+                new BooleanFunction("00100010", 3) { Mark = "39" },
+                new BooleanFunction("11011000", 3) { Mark = "40" },
+                new BooleanFunction("1001101111001101", 4) { Mark = "41" },
+                new BooleanFunction("0110111010000100", 4) { Mark = "42" },
+                new BooleanFunction("0011111100100000", 4) { Mark = "43" },
+                new BooleanFunction("0000000010000100", 4) { Mark = "44" },
+                new BooleanFunction("0001101001011011", 4) { Mark = "45" },
+                new BooleanFunction("0010110100101010", 4) { Mark = "46" },
+                new BooleanFunction("1010110100000001", 4) { Mark = "47" },
+                new BooleanFunction("0101010101000001", 4) { Mark = "48" },
+                new BooleanFunction("0011001110001111", 4) { Mark = "49" },
+                new BooleanFunction("1110001111111110", 4) { Mark = "50" },
+            };
+            foreach (BooleanFunction function in negativeFunctions)
+            {
+                Assert.AreEqual(false, function.IsLinear);
+            }
         }
 
         /// <summary>
@@ -250,7 +305,7 @@ namespace KIMath.BooleanAlgebraTests
                 new BooleanFunction("0000001000000000", 4) { Mark = "47" },
                 new BooleanFunction("1110010010011010", 4) { Mark = "48" },
                 new BooleanFunction("1001011001101000", 4) { Mark = "49" },
-                new BooleanFunction("1001011001101000", 4) { Mark = "50" },
+                new BooleanFunction("1110110011011010", 4) { Mark = "50" },
             };
             foreach (BooleanFunction function in negativeFunctions)
             {

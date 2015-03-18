@@ -11,13 +11,18 @@ namespace KIMath.ResearchConsole
     {
         static void Main(string[] args)
         {
-            for (int i = 0; i < 256;i++ )
+            int c = 1;
+            for (int i = 0; i < 65536;i++ )
             {
-                BooleanFunction f = new BooleanFunction(i, 3);
+                BooleanFunction f = new BooleanFunction(i, 4);
                 if (f.IsLinear)
-                    Console.WriteLine(f);
+                {
+                    Console.WriteLine("{0}) {1}", c, f);
+                    Console.WriteLine();
+                    c++;
+                }
             }
-
+            Console.WriteLine("DONE");
 
 
 
