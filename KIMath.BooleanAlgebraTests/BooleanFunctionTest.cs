@@ -7,11 +7,13 @@ namespace KIMath.BooleanAlgebraTests
     [TestClass]
     public class BooleanFunctionTest
     {
+        #region Constructor Tests
+
         /// <summary>
         /// Функция алгебры логики может быть задана в виде массива Bool, и значения функции не будут потеряны
         /// </summary>
         [TestMethod]
-        public void CanBeConstructedByBoolArray()
+        public void ConstructFunctionByBoolArray()
         {
             bool[] input = new bool[8] { false, true, true, false, false, true, true, true };
             BooleanFunction function = new BooleanFunction(input, 3);
@@ -39,7 +41,7 @@ namespace KIMath.BooleanAlgebraTests
         /// Функция алгебры логики может быть задана в виде строки, и значения функции не будут потеряны
         /// </summary>
         [TestMethod]
-        public void CanBeConstructedByString()
+        public void ConstructFunctionByString()
         {
             string input = "01001110";
             BooleanFunction function = new BooleanFunction(input, 3);
@@ -67,7 +69,7 @@ namespace KIMath.BooleanAlgebraTests
         /// Функция алгебры логики может быть задана в виде числа, и значения функции не будут потеряны
         /// </summary>
         [TestMethod]
-        public void CanBeConstructedByInteger()
+        public void ConstructFunctionByInteger()
         {
             int input = 45; // В двоичной системе 00101101
             BooleanFunction function = new BooleanFunction(input, 3);
@@ -91,11 +93,15 @@ namespace KIMath.BooleanAlgebraTests
             Assert.AreNotEqual(false, function.Value[7]);
         }
 
+        #endregion
+
+        #region Post Properties Detection Tests
+
         /// <summary>
         /// Свойство "Самодвойственность" для функции может быть корректно определена
         /// </summary>
         [TestMethod]
-        public void SelfdualPropertyCalculatedCorrectly()
+        public void PropertySelfdualCalculate()
         {
             // Множество удовлетворяющих функций, проверенных "на бумаге"
             string[] positiveInputs = new string[] { 
@@ -103,10 +109,11 @@ namespace KIMath.BooleanAlgebraTests
                 "1000110101001110", "0010011100011011", "0110001010111001", "0001100101100111",
                 "0111001010110001", "1000011010011110", "0000011100011111", "1010001100111010",
             };
-            foreach(string input in positiveInputs)
+            foreach (string input in positiveInputs)
             {
                 BooleanFunction function = new BooleanFunction(input, (int)Math.Log(input.Length, 2));
                 Assert.AreEqual(true, function.IsSelfDual);
+                Assert.AreEqual(true, function.GetPostPropertyValue(PostProperty.SelfDual));
             }
 
             // Множество НЕ удовлетворяющих функций, проверенных "на бумаге"
@@ -119,6 +126,7 @@ namespace KIMath.BooleanAlgebraTests
             {
                 BooleanFunction function = new BooleanFunction(input, (int)Math.Log(input.Length, 2));
                 Assert.AreEqual(false, function.IsSelfDual);
+                Assert.AreEqual(false, function.GetPostPropertyValue(PostProperty.SelfDual));
             }
         }
 
@@ -126,7 +134,7 @@ namespace KIMath.BooleanAlgebraTests
         /// Свойство "Сохраняет 0" для функции может быть корректно определена
         /// </summary>
         [TestMethod]
-        public void Preserving0PropertyCalculatedCorrectly()
+        public void PropertyPreserving0Calculate()
         {
             // Множество удовлетворяющих функций, проверенных "на бумаге"
             string[] positiveInputs = new string[] { 
@@ -138,6 +146,7 @@ namespace KIMath.BooleanAlgebraTests
             {
                 BooleanFunction function = new BooleanFunction(input, (int)Math.Log(input.Length, 2));
                 Assert.AreEqual(true, function.IsPreserving0);
+                Assert.AreEqual(true, function.GetPostPropertyValue(PostProperty.PreservingNil));
             }
 
             // Множество НЕ удовлетворяющих функций, проверенных "на бумаге"
@@ -150,6 +159,7 @@ namespace KIMath.BooleanAlgebraTests
             {
                 BooleanFunction function = new BooleanFunction(input, (int)Math.Log(input.Length, 2));
                 Assert.AreEqual(false, function.IsPreserving0);
+                Assert.AreEqual(false, function.GetPostPropertyValue(PostProperty.PreservingNil));
             }
         }
 
@@ -157,7 +167,7 @@ namespace KIMath.BooleanAlgebraTests
         /// Свойство "Сохраняет 1" для функции может быть корректно определена
         /// </summary>
         [TestMethod]
-        public void Preserving1PropertyCalculatedCorrectly()
+        public void PropertyPreserving1Calculate()
         {
             // Множество удовлетворяющих функций, проверенных "на бумаге"
             string[] positiveInputs = new string[] { 
@@ -169,6 +179,7 @@ namespace KIMath.BooleanAlgebraTests
             {
                 BooleanFunction function = new BooleanFunction(input, (int)Math.Log(input.Length, 2));
                 Assert.AreEqual(true, function.IsPreserving1);
+                Assert.AreEqual(true, function.GetPostPropertyValue(PostProperty.PreservingOne));
             }
 
             // Множество НЕ удовлетворяющих функций, проверенных "на бумаге"
@@ -181,6 +192,7 @@ namespace KIMath.BooleanAlgebraTests
             {
                 BooleanFunction function = new BooleanFunction(input, (int)Math.Log(input.Length, 2));
                 Assert.AreEqual(false, function.IsPreserving1);
+                Assert.AreEqual(false, function.GetPostPropertyValue(PostProperty.PreservingOne));
             }
         }
 
@@ -188,7 +200,7 @@ namespace KIMath.BooleanAlgebraTests
         /// Свойство "Линейность" для функции может быть корректно определена
         /// </summary>
         [TestMethod]
-        public void LinearPropertyCalculatedCorrectly()
+        public void PropertyLinearCalculate()
         {
             /* Множество удовлетворяющих свойству функций, проверенных "на бумаге"  */
             /* Проверка произведена в файле "Documents/Функции для проверки определения свойства линейности.docx" */
@@ -217,6 +229,7 @@ namespace KIMath.BooleanAlgebraTests
             foreach (BooleanFunction function in positiveFunctions)
             {
                 Assert.AreEqual(true, function.IsLinear);
+                Assert.AreEqual(true, function.GetPostPropertyValue(PostProperty.Linear));
             }
             /* Множество НЕ удовлетворяющих свойству функций, проверенных "на бумаге"  */
             /* Проверка произведена в файле "Documents/Функции для проверки определения свойства линейности.docx" */
@@ -245,6 +258,7 @@ namespace KIMath.BooleanAlgebraTests
             foreach (BooleanFunction function in negativeFunctions)
             {
                 Assert.AreEqual(false, function.IsLinear);
+                Assert.AreEqual(false, function.GetPostPropertyValue(PostProperty.Linear));
             }
         }
 
@@ -252,7 +266,7 @@ namespace KIMath.BooleanAlgebraTests
         /// Свойство "Монотонность" для функции может быть корректно определена
         /// </summary>
         [TestMethod]
-        public void MonotonePropertyCalculatedCorrectly()
+        public void PropertyMonotoneCalculate()
         {
             /* Множество удовлетворяющих свойству функций, проверенных "на бумаге"  */
             /* Проверка произведена в файле "Documents/Функции для проверки определения свойства монотонности.docx" */
@@ -281,6 +295,7 @@ namespace KIMath.BooleanAlgebraTests
             foreach (BooleanFunction function in positiveFunctions)
             {
                 Assert.AreEqual(true, function.IsMonotone);
+                Assert.AreEqual(true, function.GetPostPropertyValue(PostProperty.Monotone));
             }
 
             /* Множество НЕ удовлетворяющих свойству функций, проверенных "на бумаге" */
@@ -310,8 +325,11 @@ namespace KIMath.BooleanAlgebraTests
             foreach (BooleanFunction function in negativeFunctions)
             {
                 Assert.AreEqual(false, function.IsMonotone);
+                Assert.AreEqual(false, function.GetPostPropertyValue(PostProperty.Monotone));
             }
         }
+
+        #endregion
     }
 }
 

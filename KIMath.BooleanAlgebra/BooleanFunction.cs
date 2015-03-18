@@ -624,7 +624,7 @@ namespace KIMath.BooleanAlgebra
         /// </summary>
         /// <param name="props">Множество свойств Поста</param>
         /// <returns>Упорядоченный множество, где False - функций не удовлетворяет свойству. True - функция удовлетворяет свойству.</returns>
-        public IEnumerable<bool> GetPostProperties(PostProperty[] props)
+        public IEnumerable<bool> GetPostProperties(params PostProperty[] props)
         {
             List<bool> result = new List<bool>();
             foreach(PostProperty prop in props)
@@ -731,6 +731,11 @@ namespace KIMath.BooleanAlgebra
         public override bool Equals(object obj)
         {
             return BooleanAlgebraHelper.CollectionAreEquals(this.Value, ((BooleanFunction)obj).Value);
+        }
+
+        public override int GetHashCode()
+        {
+            return (int)BooleanAlgebraHelper.BinaryToDec(this.Value);
         }
 
         #endregion
