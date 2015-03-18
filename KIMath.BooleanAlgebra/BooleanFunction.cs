@@ -188,7 +188,7 @@ namespace KIMath.BooleanAlgebra
             {
                 throw new ArgumentException(string.Format("Function's value length can't be much then {0} for functions of {1} variables", Math.Pow(2, variables), variables));
             }
-            bool[] value = this.StringToBoolArray(binaryValue);
+            bool[] value = BooleanAlgebraHelper.StringToBoolArray(binaryValue).ToArray();
             if (value.Length < Math.Pow(2, variables))
             {
                 value = this.SetCorrectLength(value, (int)Math.Pow(2, variables));
@@ -205,7 +205,7 @@ namespace KIMath.BooleanAlgebra
         /// <param name="variables">Число переменных</param>
         public BooleanFunction(Int64 decimalValue, int variables)
         {
-            bool[] value = BooleanAlgebraHelper.DecToBoolArray(decimalValue);
+            bool[] value = BooleanAlgebraHelper.DecToBinaryArray(decimalValue).ToArray();
             if (value.Length > Math.Pow(2, variables))
             {
                 throw new ArgumentException(string.Format("Function's value length can't be much then {0} for functions of {1} variables", Math.Pow(2, variables), variables));
@@ -221,20 +221,6 @@ namespace KIMath.BooleanAlgebra
         #endregion
 
         #region PrivateMethods
-
-        private void ResetAllTriggers()
-        {
-            this._postClass = null;
-            this._isSelfDual = null;
-            this._isPreserving0 = null;
-            this._isPreserving1 = null;
-            this._isLinear = null;
-            this._isMonotone = null;
-            this._zhegalkinCoefficents = null;
-            this._minimalDNF = null;
-            this._repetivity = null;
-            this._omega1 = null;
-        }
 
         private int GetRepetivityValue()
         {
@@ -274,7 +260,7 @@ namespace KIMath.BooleanAlgebra
             {
                 if (value[i].ToString() == "1")
                 {
-                    trues[c] = BooleanAlgebraHelper.GetBoolArrayAsString(this.SetCorrectLength(BooleanAlgebraHelper.DecToBoolArray(i), this.Variables));
+                    trues[c] = BooleanAlgebraHelper.BinaryToString(this.SetCorrectLength(BooleanAlgebraHelper.DecToBinaryArray(i), this.Variables));
                     c++;
                 }
             }
@@ -398,7 +384,7 @@ namespace KIMath.BooleanAlgebra
             for (int i = 1; i < zhegalkinCoefficients.Length; i++)
             {
                 List<bool> values = new List<bool>() { this.Value[i] };
-                bool[] input = BooleanAlgebraHelper.DecToBoolArray(i);
+                bool[] input = BooleanAlgebraHelper.DecToBinaryArray(i).ToArray();
                 // Ищем номера необходимых наборов
                 List<int> naborCoefficents = new List<int>();
                 for (int a = 0; a < input.Length; a++)
@@ -457,7 +443,7 @@ namespace KIMath.BooleanAlgebra
                     if (this._g0ComplexityProcessor == null)
                     {
                         IEnumerable<bool> boolSequence = this.GetCompactValue(linearOrder);
-                        string sequence = BooleanAlgebraHelper.GetBoolArrayAsString(boolSequence);
+                        string sequence = BooleanAlgebraHelper.BinaryToString(boolSequence);
                         this._g0ComplexityProcessor = new OmegaComplexityProcessor(sequence);
                     }
                     return this._g0ComplexityProcessor;
@@ -465,7 +451,7 @@ namespace KIMath.BooleanAlgebra
                     if (this._g1ComplexityProcessor == null)
                     {
                         IEnumerable<bool> boolSequence = this.GetCompactValue(linearOrder);
-                        string sequence = BooleanAlgebraHelper.GetBoolArrayAsString(boolSequence);
+                        string sequence = BooleanAlgebraHelper.BinaryToString(boolSequence);
                         this._g1ComplexityProcessor = new OmegaComplexityProcessor(sequence);
                     }
                     return this._g1ComplexityProcessor;
@@ -544,7 +530,7 @@ namespace KIMath.BooleanAlgebra
                 for (int y = 0; y < newSet.Length; y++)
                 {
                     newSet[y] = BooleanAlgebraHelper.Xor(set[y], set[y + 1]);
-                    if (y == 0 && newSet[y] && BooleanAlgebraHelper.DecToBoolArray(i + 1).Where(x => x).ToList().Count > 1)
+                    if (y == 0 && newSet[y] && BooleanAlgebraHelper.DecToBinaryArray(i + 1).Where(x => x).ToList().Count > 1)
                         return false;
                 }
                 set = newSet;
@@ -578,26 +564,12 @@ namespace KIMath.BooleanAlgebra
             List<bool[]> result = new List<bool[]>();
             for (int i = 0; i < Math.Pow(2, this.Variables); i++)
             {
-                result.Add(this.SetCorrectLength(BooleanAlgebraHelper.DecToBoolArray(i), this.Variables));
+                result.Add(this.SetCorrectLength(BooleanAlgebraHelper.DecToBinaryArray(i), this.Variables));
             }
             return result;
         }
 
-        private bool[] StringToBoolArray(string value)
-        {
-            bool[] result = new bool[value.Length];
-            for (int i = 0; i < value.Length; i++)
-            {
-                if (value[i] != '1' && value[i] != '0')
-                {
-                    throw new ArgumentException("Value can't contains any symbols, except 0 or 1");
-                }
-                result[i] = (value[i] == '1');
-            }
-            return result;
-        }
-
-        private bool[] SetCorrectLength(bool[] value, int length)
+        private bool[] SetCorrectLength(IEnumerable<bool> value, int length)
         {
             List<bool> result = value.ToList();
             while (result.Count < length)
@@ -669,7 +641,7 @@ namespace KIMath.BooleanAlgebra
         /// <returns>Значение функции на наборе</returns>
         public bool GetByInput(string input)
         {
-            return this.Value[BooleanAlgebraHelper.BinToDec(input)];
+            return this.Value[BooleanAlgebraHelper.BinaryToDec(input)];
         }
 
         /// <summary>
@@ -690,7 +662,7 @@ namespace KIMath.BooleanAlgebra
         /// <returns>Значение функции на наборе</returns>
         public bool GetByInput(IEnumerable<bool> input)
         {
-            return this.Value[BooleanAlgebraHelper.BinToDec(input)];
+            return this.Value[BooleanAlgebraHelper.BinaryToDec(input)];
         }
 
         /// <summary>
@@ -753,7 +725,7 @@ namespace KIMath.BooleanAlgebra
 
         public override string ToString()
         {
-            return BooleanAlgebraHelper.GetBoolArrayAsString(this.Value);
+            return BooleanAlgebraHelper.BinaryToString(this.Value);
         }
 
         public override bool Equals(object obj)

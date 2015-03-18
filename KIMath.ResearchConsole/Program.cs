@@ -11,8 +11,14 @@ namespace KIMath.ResearchConsole
     {
         static void Main(string[] args)
         {
+            Console.WriteLine(BooleanAlgebraHelper.Xor(true, false,true,false,false,false,true));
+            Console.ReadKey();
+        }
+
+        static void ShowLinear()
+        {
             int c = 1;
-            for (int i = 0; i < 65536;i++ )
+            for (int i = 0; i < 65536; i++)
             {
                 BooleanFunction f = new BooleanFunction(i, 4);
                 if (f.IsLinear)
@@ -23,10 +29,6 @@ namespace KIMath.ResearchConsole
                 }
             }
             Console.WriteLine("DONE");
-
-
-
-                Console.ReadKey();
         }
 
         static void HasRepeat(string[] arr)

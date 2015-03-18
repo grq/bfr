@@ -8,100 +8,48 @@ namespace KIMath.BooleanAlgebra
 {
     public class BooleanAlgebraHelper
     {
-        static public bool Implication(bool A, bool B)
-        {
-            return !(A == true && B == false);
-        }
+        #region Boolean Operations
 
-        static public bool CollectionAreEquals<T>(IEnumerable<T> valueA, IEnumerable<T> valueB)
+        static public bool Implication(params bool[] list)
         {
-            var a = valueA.ToArray();
-            var b = valueB.ToArray();
-            if (a.Length != a.Length)
+            if(list.Length < 2)
             {
-                return false;
+                throw new ArgumentOutOfRangeException("Params", "At least two parameters should be provided.");
             }
-            for (int i = 0; i < a.Length; i++)
+            bool result = list[0];
+            for (int i = 1; i < list.Length; i++)
             {
-                if (!a[i].Equals(b[i]))
-                {
-                    return false;
-                }
-            }
-            return true;
-        }
-
-        static public bool Xor(bool valueA, bool valueB)
-        {
-            return valueA != valueB;
-        }
-
-        static public string DecToBin(long value)
-        {
-            StringBuilder result = new StringBuilder();
-            do
-            {
-                result.Insert(0, (value % 2).ToString());
-                value = value / 2;
-            }
-            while (value > 1);
-            return result.Insert(0, value).ToString();
-        }
-
-        static public int BinToDec(IEnumerable<bool> a)
-        {
-            int bin = 0;
-            bool[] arr = a.ToArray();
-            for (int i = 0; i < arr.Length; i++)
-            {
-                if (arr[arr.Length - i - 1]) bin += Convert.ToInt32(Math.Pow(2, i));
-            }
-            return bin;
-        }
-
-        static public int BinToDec(string a)
-        {
-            int bin = 0;
-            for (int i = 0; i < a.Length; i++)
-            {
-                if (a[a.Length - i - 1] == '1') bin += Convert.ToInt32(Math.Pow(2, i));
-            }
-            return bin;
-        }
-
-        static public string GetNormalForm(string function, int variables)
-        {
-            StringBuilder func = new StringBuilder(function);
-            while (func.Length < (int)Math.Pow(2, variables))
-            {
-                func.Insert(0, '0');
-            }
-            return func.ToString();
-        }
-
-        static public string GetNormalFormByLength(string function, int length)
-        {
-            StringBuilder func = new StringBuilder(function);
-            while (func.Length < length)
-            {
-                func.Insert(0, '0');
-            }
-            return func.ToString();
-        }
-
-        static public bool[] GetNormalBoolForm(Int64 input, Int64 length)
-        {
-            bool[] result = new bool[length];
-            bool[] value = DecToBoolArray(input);
-            Int64 offset = length - value.Length;
-            for (int i = 0; i < length; i++)
-            {
-                result[i] = i < offset ? false : value[i - offset];
+                result = !result || list[i];
             }
             return result;
         }
 
-        static public bool[] DecToBoolArray(Int64 value)
+        static public bool Xor(params bool[] list)
+        {
+            if (list.Length < 2)
+            {
+                throw new ArgumentOutOfRangeException("Params", "At least two parameters should be provided.");
+            }
+            bool result = list[0];
+            for (int i = 1; i < list.Length; i++)
+            {
+                result = result != list[i];
+            }
+            return result;
+        }
+
+        #endregion
+
+        #region Numerical System Conversions
+
+        #region Dec To Binary
+
+        /// <summary>
+        /// Перевод десятичного числа в двоичную систему счисления
+        /// </summary>
+        /// <param name="value">Десятичное число</param>
+        /// <returns>Двоичное число</returns>
+        static public IEnumerable<bool> DecToBinaryArray(long value)
         {
             List<bool> result = new List<bool>();
             while (value > 1)
@@ -113,29 +61,163 @@ namespace KIMath.BooleanAlgebra
             return result.ToArray();
         }
 
-        static public string DecToBoolString(int value, int length)
+        /// <summary>
+        /// Перевод из десятичной в двоичную систему счисления
+        /// </summary>
+        /// <param name="value">Число в десятичной системе счисления</param>
+        /// <returns>Число в двоичной системе счисления, в формате строки, где 1 - True, 0 -False</returns>
+        static public string DecToBinaryString(long value)
         {
-            bool[] result = DecToBoolArray(value);
-            string resultString = string.Join("", result.Select(x => x ? "1" : "0"));
-            return GetNormalFormByLength(resultString, length);
+            return BinaryToString(DecToBinaryArray(value));
         }
 
-        static public string BoolToString(bool[] input)
+        /// <summary>
+        /// Перевод из десятичной в двоичную систему счисления, с заданной длиной массива
+        /// </summary>
+        /// <param name="value">Число в десятичной системе счисления</param>
+        /// <param name="length">Длина массива</param>
+        /// <returns>Число в двоичной системе счисления, в формате строки, где 1 - True, 0 -False</returns>
+        static public string DecToBinaryString(long value, int length)
         {
-            return string.Join(string.Empty, input.Select(x => x ? '1' : '0'));
+            return GetCompletedFormByLength(DecToBinaryString(value), length);
         }
 
-        static public string BoolToString(bool[] input, string separator)
+        #endregion
+
+        #region Binary To Dec
+
+        /// <summary>
+        /// Перевод из двоичной в десятичную систему счисления
+        /// </summary>
+        /// <param name="value">Число в двоичной системе счисления в формате массива bool</param>
+        /// <returns>Число в десятичной системе счисления</returns>
+        static public long BinaryToDec(IEnumerable<bool> value)
+        {
+            long bin = 0;
+            bool[] arr = value.ToArray();
+            for (int i = 0; i < arr.Length; i++)
+            {
+                if (arr[arr.Length - i - 1]) bin += Convert.ToInt32(Math.Pow(2, i));
+            }
+            return bin;
+        }
+
+        /// <summary>
+        /// Перевод из двоичной в десятичную систему счисления
+        /// </summary>
+        /// <param name="value">Число в двоичной системе счисления в формате строки</param>
+        /// <returns>Число в десятичной системе счисления</returns>
+        static public long BinaryToDec(string value)
+        {
+            return BinaryToDec(StringToBoolArray(value));
+        }
+
+        #endregion
+
+        #endregion
+
+        #region Utility Methods for Binaries
+
+        static public string BinaryToString(IEnumerable<bool> input, string separator)
         {
             return string.Join(separator, input.Select(x => x ? '1' : '0'));
         }
 
+        static public string BinaryToString(IEnumerable<bool> input)
+        {
+            return BinaryToString(input, string.Empty);;
+        }
+
+        static public IEnumerable<bool> StringToBoolArray(string value)
+        {
+            bool[] result = new bool[value.Length];
+            for (int i = 0; i < value.Length; i++)
+            {
+                if (value[i] != '1' && value[i] != '0')
+                {
+                    throw new ArgumentException("Value can't contains any symbols, except 0 or 1");
+                }
+                result[i] = (value[i] == '1');
+            }
+            return result;
+        }
+
+        #endregion
+
+        #region Utility Methods for Boolean Functions
+
+        /// <summary>
+        /// Получить число всех возмождных функций алгебры логики от заданного числа переменных
+        /// </summary>
+        /// <param name="variables">Число переменных</param>
+        /// <returns>Колличество функций алгебры логики</returns>
         static public Int64 FunctionsOfVariables(int variables)
         {
             return (Int64)Math.Pow(2, Math.Pow(2, variables));
         }
 
-        static public List<int> GetCompactDomain(LinearOrder order, int n)
+        /// <summary>
+        /// Привести строку значений функции в нормальный вид, т.е. если не все значения определены, в начало дописывается "0"
+        /// </summary>
+        /// <param name="value">Заданная строка</param>
+        /// <param name="variables">Заданное число переменных</param>
+        /// <returns>Результирующая строка</returns>
+        static public string GetCompletedFormByVariables(string value, int variables)
+        {
+            StringBuilder func = new StringBuilder(value);
+            while (func.Length < (int)Math.Pow(2, variables))
+            {
+                func.Insert(0, '0');
+            }
+            return func.ToString();
+        }
+
+        /// <summary>
+        /// Добавить в начало строки столько символов "0", что бы длина массива была равна заданной в параметрах длине
+        /// </summary>
+        /// <param name="value">Заданная строка</param>
+        /// <param name="length">Заданная длина строки</param>
+        /// <returns>Результирующая строка</returns>
+        static public string GetCompletedFormByLength(string value, int length)
+        {
+            StringBuilder func = new StringBuilder(value);
+            while (func.Length < length)
+            {
+                func.Insert(0, '0');
+            }
+            return func.ToString();
+        }
+
+        /// <summary>
+        /// Перевод десятичного очисла в массив bool в формате с заданной длиной массива
+        /// </summary>
+        /// <param name="value">Десятичное число</param>
+        /// <param name="length">Необходимая длина массива</param>
+        /// <returns>Двоичное число</returns>
+        static public bool[] GetCompletedBinaryForm(long value, long length)
+        {
+            bool[] result = new bool[length];
+            bool[] arr = DecToBinaryArray(value).ToArray();
+            Int64 offset = length - arr.Length;
+            for (int i = 0; i < length; i++)
+            {
+                result[i] = i < offset ? false : arr[i - offset];
+            }
+            return result;
+        }
+
+        #endregion
+
+        #region Extra Methods
+
+        /// <summary>
+        /// Получить компактную последовательность для задания области опредлеления функций от N переменных
+        /// с заданным линейным порядком над множеством {0, 1}
+        /// </summary>
+        /// <param name="order">Линейный порядок</param>
+        /// <param name="n">Число переменных</param>
+        /// <returns>Множество наборов переменных в необходимом порядке</returns>
+        static public List<long> GetCompactDomain(LinearOrder order, int n)
         {
             bool hi;
             bool low;
@@ -177,31 +259,34 @@ namespace KIMath.BooleanAlgebra
                     inputs.Add(comparer.ToArray());
                 }
             }
-            return (from nabor in inputs select BoolArrayToInt(nabor)).ToList();
+            return (from nabor in inputs select BinaryToDec(nabor)).ToList();
         }
 
-        static private int BoolArrayToInt(bool[] value)
+        /// <summary>
+        /// Сравнение двух коллекций объектов
+        /// </summary>
+        /// <typeparam name="T">Любой тип</typeparam>
+        /// <param name="valueA">Коллекция объектов</param>
+        /// <param name="valueB">Коллекция объектов</param>
+        /// <returns>Результат сравнения</returns>
+        static public bool CollectionAreEquals<T>(IEnumerable<T> valueA, IEnumerable<T> valueB)
         {
-            int result = 0;
-            for (int i = 0; i < value.Length; i++)
+            var a = valueA.ToArray();
+            var b = valueB.ToArray();
+            if (a.Length != a.Length)
             {
-                if (value[value.Length - i - 1])
+                return false;
+            }
+            for (int i = 0; i < a.Length; i++)
+            {
+                if (!a[i].Equals(b[i]))
                 {
-                    result += Convert.ToInt32(Math.Pow(2, i));
+                    return false;
                 }
             }
-            return result;
+            return true;
         }
 
-        static public string GetBoolArrayAsString(IEnumerable<bool> value)
-        {
-            StringBuilder sb = new StringBuilder();
-            string result = string.Empty;
-            foreach(bool v in value)
-            {
-                sb.Append(v ? '1' : '0');
-            }
-            return sb.ToString();
-        }
+        #endregion
     }
 }
