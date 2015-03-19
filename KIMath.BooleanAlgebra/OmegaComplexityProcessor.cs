@@ -22,7 +22,7 @@ namespace KIMath.BooleanAlgebra
             }
         }
 
-        public List<int> Omega1
+        public IEnumerable<int> Omega1
         {
             get
             {
@@ -40,9 +40,57 @@ namespace KIMath.BooleanAlgebra
             {
                 if (!this._absoluteOmega1.HasValue)
                 {
-                    this.ProcessAbsoluteOmega();
+                    this.ProcessAbsoluteOmega1();
                 }
                 return this._absoluteOmega1.Value;
+            }
+        }
+
+        public IEnumerable<int> Omega2
+        {
+            get
+            {
+                if (this._omega2 == null)
+                {
+                    this.ProcessOmega2Omega3();
+                }
+                return this._omega2;
+            }
+        }
+
+        public int AbsoluteOmega2
+        {
+            get
+            {
+                if (!this._absoluteOmega2.HasValue)
+                {
+                    this.ProcessAbsoluteOmega2();
+                }
+                return this._absoluteOmega2.Value;
+            }
+        }
+
+        public IEnumerable<IEnumerable<int>> Omega3
+        {
+            get
+            {
+                if (this._omega3 == null)
+                {
+                    this.ProcessOmega2Omega3();
+                }
+                return this._omega3;
+            }
+        }
+
+        public int AbsoluteOmega3
+        {
+            get
+            {
+                if (!this._absoluteOmega3.HasValue)
+                {
+                    this.ProcessAbsoluteOmega3();
+                }
+                return this._absoluteOmega3.Value;
             }
         }
 
@@ -50,13 +98,21 @@ namespace KIMath.BooleanAlgebra
 
         #region PrivateFields
 
+        private string _sequence;
+
         private int? _omega0;
 
         private List<int> _omega1;
 
         private int? _absoluteOmega1;
 
-        private string _sequence;
+        private List<int> _omega2;
+
+        private int? _absoluteOmega2;
+
+        private List<List<int>> _omega3;
+
+        private int? _absoluteOmega3;
 
         #endregion
 
@@ -102,7 +158,7 @@ namespace KIMath.BooleanAlgebra
             this._omega1.Add(this._sequence.Length);
         }
 
-        private void ProcessAbsoluteOmega()
+        private void ProcessAbsoluteOmega1()
         {
             if (this._omega1 == null)
             {
@@ -112,6 +168,66 @@ namespace KIMath.BooleanAlgebra
             for (int i = 0; i < this._omega1.Count; i++)
             {
                 this._absoluteOmega1 += (i + 1) * (_omega1[i]);
+            }
+        }
+
+        private void ProcessOmega2Omega3()
+        {
+            this._omega2 = new List<int>();
+            this._omega3 = new List<List<int>>();
+            while (this._omega2.LastOrDefault() != 1)
+            {
+                int length = this._omega2.Count + 1;
+                int changes = 1;
+                int lastChange = 0;
+                List<int> omega3Changes = new List<int>(); 
+                List<ReccurentForm> currentForms = new List<ReccurentForm>();
+                for (int start = 0; start < this._sequence.Length - length; start++)
+                {
+                    ReccurentForm form = new ReccurentForm(this._sequence, start, length);
+                    if (currentForms.Contains(form))
+                    {
+                        changes++;
+                        omega3Changes.Add(start - lastChange);
+                        lastChange = start;
+                        currentForms = new List<ReccurentForm>();
+                    }
+                    currentForms.Add(form);
+                }
+                omega3Changes.Add(_sequence.Length - length - lastChange);
+                this._omega2.Add(changes);
+                this._omega3.Add(omega3Changes);
+            }
+        }
+
+        private void ProcessAbsoluteOmega2()
+        {
+            if (this._omega2 == null)
+            {
+                this.ProcessOmega2Omega3();
+            }
+            this._absoluteOmega2 = 0;
+            for (int i = 0; i < this._omega2.Count; i++)
+            {
+                this._absoluteOmega2 += (i + 1) * (_omega2[i]);
+            }
+        }
+
+        private void ProcessAbsoluteOmega3()
+        {
+            if (this._omega3 == null)
+            {
+                this.ProcessOmega2Omega3();
+            }
+            this._absoluteOmega3 = 0;
+            for (int i = 0; i < this._omega3.Count; i++)
+            {
+                int levelWeight = 0;
+                for (int j = 0; j < this._omega3[i].Count; j++)
+                {
+                    levelWeight += (j + 1) * this._omega3[i][j];
+                }
+                this._absoluteOmega3 += (i + 1) * levelWeight;
             }
         }
 
