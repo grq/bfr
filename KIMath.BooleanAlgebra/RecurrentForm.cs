@@ -6,6 +6,10 @@ using System.Threading.Tasks;
 
 namespace KIMath.BooleanAlgebra
 {
+    /// <summary>
+    /// Рекуррентная форма, используется при вычислении сложности последовательности элементов по спектру динамических параметров,
+    /// предложенным Твердохлебовым В. А.
+    /// </summary>
     public class ReccurentForm
     {
         private string from;

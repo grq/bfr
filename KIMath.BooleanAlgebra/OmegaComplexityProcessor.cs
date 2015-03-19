@@ -129,33 +129,30 @@ namespace KIMath.BooleanAlgebra
 
         private void ProcessOmega0Omega1()
         {
+            this._omega0 = 1;
             this._omega1 = new List<int>();
-            int m = 1; // Recurrent trim
-            bool mChanged; // Flag of reccurent trim changed
-            do
+            while (this._omega1.LastOrDefault() != this._sequence.Length)
             {
-                mChanged = false; // Set flag as False
-                List<string[]> recurrentForms = new List<string[]>(); // List of recurrent forms in current recurrent trim
-                for (int i = 0; i < this._sequence.Length - m; i++) // For all possibly recurrent forms in this trim
+                List<ReccurentForm> forms = new List<ReccurentForm>();
+                for (int start = 0; start < this._sequence.Length - this._omega0; start++)
                 {
-                    string[] reccurentForm = new string[2] { this._sequence.Substring(i, m), this._sequence.Substring(i + m, 1) }; // Creatin' recurrent form in current position
-                    string[] comparer = recurrentForms.FirstOrDefault(p => p[0] == reccurentForm[0]); // Searchin' comparer for created recurrent form
-                    if (comparer != null && comparer[1] != reccurentForm[1]) // If comparer founded and it isn't match current form
+                    ReccurentForm form = new ReccurentForm(this._sequence, start, this._omega0.Value);
+                    if (forms.Contains(form))
                     {
-                        m++; // Increase recurrent trim
-                        mChanged = true; // Set flag as True
-                        this._omega1.Add(recurrentForms.First()[0].Length + recurrentForms.Count);
-                        break; // Break the cicle
+                        this._omega1.Add(start + this._omega0.Value);
+                        break;
                     }
-                    else
-                    {
-                        recurrentForms.Add(new string[2] { this._sequence.Substring(i, m), this._sequence.Substring(i + m, 1) }); // Add created recurrent form to list of all forms
-                    }
+                    forms.Add(form);
+                }
+                if (this._omega1.Count != this._omega0)
+                {
+                    this._omega1.Add(this._sequence.Length);
+                }
+                else
+                {
+                    this._omega0++;
                 }
             }
-            while (mChanged); // While trim isn't changed
-            this._omega0 = m;
-            this._omega1.Add(this._sequence.Length);
         }
 
         private void ProcessAbsoluteOmega1()
