@@ -8,10 +8,10 @@ namespace KIMath.BooleanAlgebra
 {
     public class ProcessorClassBooleanFunctions
     {
-        static public IEnumerable<PostClassBooleanFunctions> GetAllPostClasses(int variables)
+        static public IEnumerable<PostClassBooleanFunctions> GetPostClasses(int variables)
         {
             Dictionary<int, PostClassBooleanFunctions> result = new Dictionary<int, PostClassBooleanFunctions>();
-            for(int startFunc = 0; startFunc < BooleanAlgebraHelper.FunctionsOfVariables(variables);startFunc++)
+            for (int startFunc = 0; startFunc < BooleanAlgebraHelper.FunctionsOfVariables(variables); startFunc++)
             {
                 BooleanFunction function = new BooleanFunction(startFunc, variables);
                 if (!result.Keys.Contains(function.PostClassHash))
@@ -24,6 +24,23 @@ namespace KIMath.BooleanAlgebra
                 }
             }
             return result.Values;
+        }
+
+        static public PostClassBooleanFunctions GetPostClass(PostPropertyValue[] props, int variables)
+        {
+            PostClassBooleanFunctions result = new PostClassBooleanFunctions(props);
+            for (int startFunc = 0; startFunc < BooleanAlgebraHelper.FunctionsOfVariables(variables); startFunc++)
+            {
+                BooleanFunction function = new BooleanFunction(startFunc, variables);
+                if (function.HasPostPropertyValues(props))
+                {
+                    if (result.AddFunction(function))
+                    {
+                        throw new SystemException("Inner problems has been occured. Function can't be added to class.");
+                    }
+                }
+            }
+            return result;
         }
     }
 }

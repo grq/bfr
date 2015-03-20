@@ -17,7 +17,7 @@ namespace KIMath.ResearchConsole
 
         static void AnalyzeOmegaComplexity()
         {
-            var a = ProcessorClassBooleanFunctions.GetAllPostClasses(4);
+            var a = ProcessorClassBooleanFunctions.GetPostClasses(4);
             var b = a;
         }
     }
