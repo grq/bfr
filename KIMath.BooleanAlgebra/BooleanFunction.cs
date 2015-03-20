@@ -470,6 +470,16 @@ namespace KIMath.BooleanAlgebra
             return this.GetComplexityProcessor(linearOrder).AbsoluteOmega1;
         }
 
+        public int GetAbsoluteOmega2(LinearOrder linearOrder)
+        {
+            return this.GetComplexityProcessor(linearOrder).AbsoluteOmega2;
+        }
+
+        public int GetAbsoluteOmega3(LinearOrder linearOrder)
+        {
+            return this.GetComplexityProcessor(linearOrder).AbsoluteOmega3;
+        }
+
         private bool IsSelfDualFunction()
         {
             this._isSelfDual = true;

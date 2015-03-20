@@ -21,12 +21,20 @@ namespace KIMath.ResearchConsole
             OmegaComplexityProcessor ocp = new OmegaComplexityProcessor(sequence);
             Console.WriteLine("Omega 0: {0}", ocp.Omega0);
             Console.WriteLine("Omega 1:");
-            foreach(int a in ocp.Omega1)
+            foreach (int a in ocp.Omega1)
             {
                 Console.WriteLine(a);
             }
-            Console.WriteLine("Absolute Omega 2: {0}", ocp.AbsoluteOmega2);
-            Console.WriteLine("Absolute Omega 3: {0}", ocp.AbsoluteOmega3);
+            //Console.WriteLine("Absolute Omega 2: {0}", ocp.AbsoluteOmega2);
+            Console.WriteLine("Omega 3:");
+            foreach (List<int> a in ocp.Omega3)
+            {
+                foreach (int b in a)
+                {
+                    Console.WriteLine(b);
+                }
+            }
+            //Console.WriteLine("Absolute Omega 3: {0}", ocp.AbsoluteOmega3);
         }
 
         static void ShowLinear()
