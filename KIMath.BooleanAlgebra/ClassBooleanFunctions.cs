@@ -26,12 +26,10 @@ namespace KIMath.BooleanAlgebra
         /// Добавить функцию(-ии) в класс
         /// </summary>
         /// <param name="list">Функция алгебры логики</param>
-        public void AddFunction(params BooleanFunction[] list)
+        public virtual bool AddFunction(BooleanFunction function)
         {
-            foreach(BooleanFunction function in list)
-            {
-                this.Functions.Add(function);
-            }
+            this.Functions.Add(function);
+            return true;
         }
     }
 }

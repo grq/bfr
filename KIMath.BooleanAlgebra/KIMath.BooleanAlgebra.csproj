@@ -41,10 +41,14 @@
   <ItemGroup>
     <Compile Include="BooleanAlgebraHelper.cs" />
     <Compile Include="BooleanFunction.cs" />
+    <Compile Include="ClassBooleanFunctionsDnfComplexity.cs" />
     <Compile Include="ClassBooleanFunctionsOmegaComplexity.cs" />
     <Compile Include="ClassBooleanFunctions.cs" />
+    <Compile Include="ProcessorClassBooleanFunctions.cs" />
     <Compile Include="LinearOrder.cs" />
     <Compile Include="OmegaComplexityProcessor.cs" />
+    <Compile Include="PostClassBooleanFunctions.cs" />
+    <Compile Include="PostPropertyValue.cs" />
     <Compile Include="PostProperty.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RecurrentForm.cs" />

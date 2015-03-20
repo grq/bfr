@@ -17,6 +17,8 @@ namespace KIMath.BooleanAlgebra
 
         private bool[] _postClass = null;
 
+        private PostPropertyValue[] _postClassValues = null;
+
         private bool? _isSelfDual = null;
 
         private bool? _isPreserving0 = null;
@@ -111,11 +113,33 @@ namespace KIMath.BooleanAlgebra
         /// <summary>
         /// Возвращает все значения свойств Поста, в порядке S, T0, T1, L, M
         /// </summary>
-        public bool[] PostClass
+        public bool[] PostClassBool
         {
             get
             {
                 return this._postClass != null ? this._postClass : this.GetPostClass();
+            }
+        }
+
+        /// <summary>
+        /// Возвращает все значения свойств Поста
+        /// </summary>
+        public PostPropertyValue[] PostClassValues
+        {
+            get
+            {
+                return this._postClassValues != null ? this._postClassValues : this.GetPostClassValues();
+            }
+        }
+
+        /// <summary>
+        /// Хэш класса Поста
+        /// </summary>
+        public int PostClassHash
+        {
+            get
+            {
+                return (int)BooleanAlgebraHelper.BinaryToDec(this.PostClassBool);
             }
         }
 
@@ -601,6 +625,18 @@ namespace KIMath.BooleanAlgebra
             return this._postClass;
         }
 
+        private PostPropertyValue[] GetPostClassValues()
+        {
+            List<PostPropertyValue> result = new List<PostPropertyValue>();
+            result.Add(this.IsSelfDual ? PostPropertyValue.SelfDual : PostPropertyValue.NotSelfDual);
+            result.Add(this.IsPreserving0 ? PostPropertyValue.PreservingNil : PostPropertyValue.NotPreservingNil);
+            result.Add(this.IsPreserving1 ? PostPropertyValue.PreservingOne : PostPropertyValue.NotPreservingOne);
+            result.Add(this.IsLinear ? PostPropertyValue.Linear : PostPropertyValue.NotLinear);
+            result.Add(this.IsMonotone ? PostPropertyValue.Monotone : PostPropertyValue.NotMonotone);
+            this._postClassValues = result.ToArray();
+            return this._postClassValues;
+        }
+
         #endregion
 
         #region PublicMethods
@@ -642,6 +678,23 @@ namespace KIMath.BooleanAlgebra
                 result.Add(this.GetPostPropertyValue(prop));
             }
             return result;
+        }
+
+        /// <summary>
+        /// Определяет, удовлетворяет ли функция заданным значениям свойств Поста
+        /// </summary>
+        /// <param name="props">Свойство Поста</param>
+        /// <returns>Результат</returns>
+        public bool HasPostPropertyValues(params PostPropertyValue[] props)
+        {
+            foreach(PostPropertyValue prop in props)
+            {
+                if(!this.PostClassValues.Contains(prop))
+                {
+                    return false;
+                }
+            }
+            return true;
         }
 
         /// <summary>
@@ -722,7 +775,7 @@ namespace KIMath.BooleanAlgebra
         public string GetPostClassString()
         {
             StringBuilder result = new StringBuilder();
-            foreach (bool i in this.PostClass)
+            foreach (bool i in this.PostClassBool)
             {
                 result.Append(i ? '1' : '0');
             }
