@@ -79,7 +79,7 @@ namespace KIMath.BooleanAlgebra
         /// <returns>Число в двоичной системе счисления, в формате строки, где 1 - True, 0 -False</returns>
         static public string DecToBinaryString(long value, int length)
         {
-            return GetCompletedFormByLength(DecToBinaryString(value), length);
+            return GetCompletedStringFormByLength(DecToBinaryString(value), length);
         }
 
         #endregion
@@ -162,14 +162,9 @@ namespace KIMath.BooleanAlgebra
         /// <param name="value">Заданная строка</param>
         /// <param name="variables">Заданное число переменных</param>
         /// <returns>Результирующая строка</returns>
-        static public string GetCompletedFormByVariables(string value, int variables)
+        static public string GetCompletedStringFormByVariables(string value, int variables)
         {
-            StringBuilder func = new StringBuilder(value);
-            while (func.Length < (int)Math.Pow(2, variables))
-            {
-                func.Insert(0, '0');
-            }
-            return func.ToString();
+            return GetCompletedStringFormByLength(value, (int)Math.Pow(2, variables));
         }
 
         /// <summary>
@@ -178,7 +173,7 @@ namespace KIMath.BooleanAlgebra
         /// <param name="value">Заданная строка</param>
         /// <param name="length">Заданная длина строки</param>
         /// <returns>Результирующая строка</returns>
-        static public string GetCompletedFormByLength(string value, int length)
+        static public string GetCompletedStringFormByLength(string value, int length)
         {
             StringBuilder func = new StringBuilder(value);
             while (func.Length < length)
@@ -194,7 +189,7 @@ namespace KIMath.BooleanAlgebra
         /// <param name="value">Десятичное число</param>
         /// <param name="length">Необходимая длина массива</param>
         /// <returns>Двоичное число</returns>
-        static public bool[] GetCompletedBinaryForm(long value, long length)
+        static public bool[] GetCompletedBinaryFormByLength(long value, long length)
         {
             bool[] result = new bool[length];
             bool[] arr = DecToBinaryArray(value).ToArray();
@@ -204,6 +199,33 @@ namespace KIMath.BooleanAlgebra
                 result[i] = i < offset ? false : arr[i - offset];
             }
             return result;
+        }
+
+        /// <summary>
+        /// Перевод десятичного очисла в массив bool в формате с заданной длиной массива
+        /// </summary>
+        /// <param name="value">Десятичное число</param>
+        /// <param name="length">Необходимая длина массива</param>
+        /// <returns>Двоичное число</returns>
+        static public bool[] GetCompletedBinaryFormByVariables(long value, long variables)
+        {
+            return GetCompletedBinaryFormByLength(value, (int)Math.Pow(2, variables));
+        }
+
+        /// <summary>
+        /// Перевод десятичного очисла в массив bool в формате с заданной длиной массива
+        /// </summary>
+        /// <param name="value">Массив bool</param>
+        /// <param name="length">Необходимая длина массива</param>
+        /// <returns>Двоичное число</returns>
+        static public bool[] GetCompletedBinaryFormByVariables(bool[] value, long variables)
+        {
+            List<bool> result = value.ToList();
+            while (result.Count < (int)Math.Pow(2, variables))
+            {
+                result.Insert(0, false);
+            }
+            return result.ToArray();
         }
 
         #endregion
@@ -285,6 +307,21 @@ namespace KIMath.BooleanAlgebra
                 }
             }
             return true;
+        }
+
+        /// <summary>
+        /// Получить все входные наборы переменных, упорядоченные лексикографически
+        /// </summary>
+        /// <param name="variables">Число переменных</param>
+        /// <returns>Множество наборов переменных</returns>
+        static public List<bool[]> GetAllInputs(int variables)
+        {
+            List<bool[]> result = new List<bool[]>();
+            for (int i = 0; i < Math.Pow(2, variables); i++)
+            {
+                result.Add(GetCompletedBinaryFormByLength(i, variables));
+            }
+            return result;
         }
 
         #endregion

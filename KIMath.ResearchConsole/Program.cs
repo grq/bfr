@@ -11,14 +11,13 @@ namespace KIMath.ResearchConsole
     {
         static void Main(string[] args)
         {
-            AnalyzeOmegaComplexity();
+            //MinimalTestsResearch.ProcessInnerTests(3);
+            var a = BooleanAlgebraHelper.GetAllInputs(4);
             Console.ReadKey();
         }
 
         static void AnalyzeOmegaComplexity()
         {
-            var a = ProcessorClassBooleanFunctions.GetPostClasses(4);
-            var b = a;
         }
     }
 }

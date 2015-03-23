@@ -191,7 +191,7 @@ namespace KIMath.BooleanAlgebra
             }
             if (value.Length < Math.Pow(2, variables))
             {
-                value = this.SetCorrectLength(value, (int)Math.Pow(2, variables));
+                value = BooleanAlgebraHelper.GetCompletedBinaryFormByVariables(value, variables);
             }
             this.Value = value;
             this.Variables = variables;
@@ -215,7 +215,7 @@ namespace KIMath.BooleanAlgebra
             bool[] value = BooleanAlgebraHelper.StringToBoolArray(binaryValue).ToArray();
             if (value.Length < Math.Pow(2, variables))
             {
-                value = this.SetCorrectLength(value, (int)Math.Pow(2, variables));
+                value = BooleanAlgebraHelper.GetCompletedBinaryFormByVariables(value, variables);
             }
             this.Value = value;
             this.Variables = variables;
@@ -236,7 +236,7 @@ namespace KIMath.BooleanAlgebra
             }
             if (value.Length < Math.Pow(2, variables))
             {
-                value = this.SetCorrectLength(value, (int)Math.Pow(2, variables));
+                value = BooleanAlgebraHelper.GetCompletedBinaryFormByVariables(value, variables);
             }
             this.Value = value;
             this.Variables = variables;
@@ -284,7 +284,7 @@ namespace KIMath.BooleanAlgebra
             {
                 if (value[i].ToString() == "1")
                 {
-                    trues[c] = BooleanAlgebraHelper.BinaryToString(this.SetCorrectLength(BooleanAlgebraHelper.DecToBinaryArray(i), this.Variables));
+                    trues[c] = BooleanAlgebraHelper.BinaryToString(BooleanAlgebraHelper.GetCompletedBinaryFormByLength(i, this.Variables));
                     c++;
                 }
             }
@@ -533,7 +533,7 @@ namespace KIMath.BooleanAlgebra
 
         private bool IsMonotoneFunction()
         {
-            List<bool[]> inputs = this.GetAllInputs();
+            List<bool[]> inputs = BooleanAlgebraHelper.GetAllInputs(this.Variables);
             for (int i = 0; i < this.Value.Length - 1; i++)
             {
                 for (int j = i; j < this.Value.Length; j++)
@@ -591,26 +591,6 @@ namespace KIMath.BooleanAlgebra
                 }
             }
             return unComparable == 1;
-        }
-
-        private List<bool[]> GetAllInputs()
-        {
-            List<bool[]> result = new List<bool[]>();
-            for (int i = 0; i < Math.Pow(2, this.Variables); i++)
-            {
-                result.Add(this.SetCorrectLength(BooleanAlgebraHelper.DecToBinaryArray(i), this.Variables));
-            }
-            return result;
-        }
-
-        private bool[] SetCorrectLength(IEnumerable<bool> value, int length)
-        {
-            List<bool> result = value.ToList();
-            while (result.Count < length)
-            {
-                result.Insert(0, false);
-            }
-            return result.ToArray();
         }
 
         private bool[] GetPostClass()

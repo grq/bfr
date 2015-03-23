@@ -16,7 +16,7 @@ namespace KIMath.BooleanAlgebra
                 BooleanFunction function = new BooleanFunction(startFunc, variables);
                 if (!result.Keys.Contains(function.PostClassHash))
                 {
-                    result.Add(function.PostClassHash, new PostClassBooleanFunctions());
+                    result.Add(function.PostClassHash, new PostClassBooleanFunctions(function.PostClassValues));
                 }
                 if (!result[function.PostClassHash].AddFunction(function))
                 {

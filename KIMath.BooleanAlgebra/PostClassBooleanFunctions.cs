@@ -13,9 +13,39 @@ namespace KIMath.BooleanAlgebra
         /// </summary>
         public PostPropertyValue[] PostProperties { get; private set; }
 
+        public string PostPropertiesString { get; private set; }
+
         public PostClassBooleanFunctions(params PostPropertyValue[] list)
         {
             this.PostProperties = list;
+            this.CreatePostPropertiesString();
+        }
+
+        private void CreatePostPropertiesString()
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append(this.GetPostPropertyChar(PostPropertyValue.SelfDual, PostPropertyValue.NotSelfDual));
+            sb.Append(this.GetPostPropertyChar(PostPropertyValue.PreservingNil, PostPropertyValue.NotPreservingNil));
+            sb.Append(this.GetPostPropertyChar(PostPropertyValue.PreservingOne, PostPropertyValue.NotPreservingOne));
+            sb.Append(this.GetPostPropertyChar(PostPropertyValue.Linear, PostPropertyValue.NotLinear));
+            sb.Append(this.GetPostPropertyChar(PostPropertyValue.Monotone, PostPropertyValue.NotMonotone));
+            this.PostPropertiesString = sb.ToString();
+        }
+
+        private string GetPostPropertyChar(PostPropertyValue yes, PostPropertyValue no)
+        {
+            if (this.PostProperties.Contains(yes))
+            {
+                return "1";
+            }
+            else if (this.PostProperties.Contains(no))
+            {
+                return "0";
+            }
+            else
+            {
+                return "~";
+            }
         }
 
         /// <summary>
