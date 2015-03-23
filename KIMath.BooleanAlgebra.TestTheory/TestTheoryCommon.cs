@@ -9,7 +9,7 @@ namespace KIMath.BooleanAlgebra.TestTheory
     /// <summary>
     /// Общие методы для вычисления тестов
     /// </summary>
-    internal class TestTheoryCommon
+    public class TestTheoryCommon //TODO internal
     {
         /// <summary>
         /// Получить все наборы переменных, на которых значения хотя бы для двух функций различаются 

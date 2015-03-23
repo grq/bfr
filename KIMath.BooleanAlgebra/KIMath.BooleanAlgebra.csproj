@@ -44,7 +44,6 @@
     <Compile Include="ClassBooleanFunctionsDnfComplexity.cs" />
     <Compile Include="ClassBooleanFunctionsOmegaComplexity.cs" />
     <Compile Include="ClassBooleanFunctions.cs" />
-    <Compile Include="MinimalTestCommon.cs" />
     <Compile Include="ProcessorClassBooleanFunctions.cs" />
     <Compile Include="LinearOrder.cs" />
     <Compile Include="OmegaComplexityProcessor.cs" />
@@ -53,8 +52,6 @@
     <Compile Include="PostProperty.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RecurrentForm.cs" />
-    <Compile Include="MinimalTest.cs" />
-    <Compile Include="MinimalTestOuter.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

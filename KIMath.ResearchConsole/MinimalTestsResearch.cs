@@ -92,5 +92,11 @@ namespace KIMath.ResearchConsole
                 Console.WriteLine(ex.Message);
             }
         }
+
+        public static void ProcessMinimalOuterTests(int variables)
+        {
+            var a = new OuterTestProcessor(variables);
+            Console.WriteLine("!!!!!!!!!!!!!!!!!!!!!!! RESULT: " + a.Result);
+        }
     }
 }

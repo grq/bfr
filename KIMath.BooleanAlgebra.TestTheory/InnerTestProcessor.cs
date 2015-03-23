@@ -90,11 +90,11 @@ namespace KIMath.BooleanAlgebra.TestTheory
             this.ConsoleWriteLine(string.Format("Вычисление для класса: {0}", this.PostClass.PostPropertiesString));
             List<bool[]> inputs = TestTheoryCommon.ExcludeInputs(this.PostClass.Functions, this.Variables);
             /* Завершенные тесты */
-            List<MinimalTest> completed = new List<MinimalTest>();
+            List<DeadlockTestInner> completed = new List<DeadlockTestInner>();
             /* Незавершенные тесте */
-            List<MinimalTest> undone = new List<MinimalTest>();
+            List<DeadlockTestInner> undone = new List<DeadlockTestInner>();
             /* Создаём новый тест */
-            MinimalTest test = new MinimalTest(this.Variables, this.PostClass.Functions, inputs);
+            DeadlockTestInner test = new DeadlockTestInner(this.Variables, this.PostClass.Functions, inputs);
             /* Первая итерация вычисления тестов */
             undone = test.Process();
             /* Переменная число итераций */
@@ -107,9 +107,9 @@ namespace KIMath.BooleanAlgebra.TestTheory
                 y++;
                 this.ConsoleWrite(y + " ");
                 /* Создаём новый массив тестов M */
-                List<MinimalTest> newUndone = new List<MinimalTest>();
+                List<DeadlockTestInner> newUndone = new List<DeadlockTestInner>();
                 /* Для каждого теста t */
-                foreach (MinimalTest t in undone)
+                foreach (DeadlockTestInner t in undone)
                 {
                     /* В массив M добавляем результат итерации теста t */
                     newUndone.AddRange(t.Process());

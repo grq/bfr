@@ -44,7 +44,8 @@
     <Compile Include="DeadlockTestInner.cs" />
     <Compile Include="DeadlockTestCommon.cs" />
     <Compile Include="DeadlockTestOuter.cs" />
-    <Compile Include="DeadlockTestProcessor.cs" />
+    <Compile Include="InnerTestProcessor.cs" />
+    <Compile Include="OuterTestProcessor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestTheoryCommon.cs" />
   </ItemGroup>

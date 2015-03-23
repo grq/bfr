@@ -56,7 +56,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="Resources\Igor Kislyakov - Employee profile.docx" />
     <None Include="Resources\Mockup_ProcessMinimalInnerTests_Word.docx" />
   </ItemGroup>
   <ItemGroup>

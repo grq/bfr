@@ -9,7 +9,7 @@ namespace KIMath.BooleanAlgebra
     /// <summary>
     /// Тупиковый тест - Базовый класс
     /// </summary>
-    internal abstract class DeadlockTestCommon
+    public abstract class DeadlockTestCommon //todo internal
     {
         public List<DeadlockTestCommon> ChildTest { get; set; }
 
