@@ -11,8 +11,7 @@ namespace KIMath.ResearchConsole
     {
         static void Main(string[] args)
         {
-            //MinimalTestsResearch.ProcessInnerTests(3);
-            var a = BooleanAlgebraHelper.GetAllInputs(4);
+            MinimalTestsResearch.UseProcessor(3);
             Console.ReadKey();
         }
 

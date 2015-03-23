@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KIMath.ResearchConsole", "K
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KIMath.BooleanAlgebraTests", "KIMath.BooleanAlgebraTests\KIMath.BooleanAlgebraTests.csproj", "{F75DC5AC-EA6F-4F1A-B241-232037CA69D9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KIMath.BooleanAlgebra.TestTheory", "KIMath.BooleanAlgebra.TestTheory\KIMath.BooleanAlgebra.TestTheory.csproj", "{FCAC1FE7-8B45-4B24-ADC8-32D50882DE40}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{F75DC5AC-EA6F-4F1A-B241-232037CA69D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F75DC5AC-EA6F-4F1A-B241-232037CA69D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F75DC5AC-EA6F-4F1A-B241-232037CA69D9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FCAC1FE7-8B45-4B24-ADC8-32D50882DE40}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FCAC1FE7-8B45-4B24-ADC8-32D50882DE40}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FCAC1FE7-8B45-4B24-ADC8-32D50882DE40}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FCAC1FE7-8B45-4B24-ADC8-32D50882DE40}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -9,6 +9,12 @@ namespace KIMath.ResearchConsole
 {
     static public class ResearchUtilities
     {
+        static public void WriteTitle(string text)
+        {
+            Console.WriteLine("------- {0} -------", text);
+            Console.WriteLine();
+        }
+
         static public void ReplaceWordText(Word.Application application, string original, string replacement)
         {
             application.Selection.Find.ClearFormatting();

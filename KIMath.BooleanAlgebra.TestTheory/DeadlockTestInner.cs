@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace KIMath.BooleanAlgebra
 {
-    public class MinimalTest : MinimalTestCommon
+    internal class DeadlockTestInner : DeadlockTestCommon
     {
         public bool Comleted { get; set; }
 
@@ -18,20 +18,20 @@ namespace KIMath.BooleanAlgebra
 
         public string HistoryString { get; private set; }
 
-        public MinimalTest() 
+        public DeadlockTestInner() 
             : base()
         {
             this.History = new List<bool[]>();
         }
 
-        public MinimalTest(int variables)
+        public DeadlockTestInner(int variables)
             : base()
         {
             this.Variables = variables;
             this.History = new List<bool[]>();
         }
 
-        public MinimalTest(int variables, IEnumerable<BooleanFunction> functions, List<bool[]> inputs)
+        public DeadlockTestInner(int variables, IEnumerable<BooleanFunction> functions, List<bool[]> inputs)
             : base()
         {
             this.Variables = variables;
@@ -45,9 +45,9 @@ namespace KIMath.BooleanAlgebra
         /// Рекурсивное вычисление тестов затрудняет ограниченное количество доступной машине памяти.
         /// </summary>
         /// <returns></returns>
-        public List<MinimalTest> Process()
+        public List<DeadlockTestInner> Process()
         {
-            List<MinimalTest> result = new List<MinimalTest>();
+            List<DeadlockTestInner> result = new List<DeadlockTestInner>();
             this.Comleted = this.FunctionsLists.Count == 0;
             if (this.Comleted)
             {
@@ -76,7 +76,7 @@ namespace KIMath.BooleanAlgebra
                         if (negativeFunctions.Count > 1)
                             lists.Add(negativeFunctions);
                     }
-                    MinimalTest test = new MinimalTest(this.Variables);
+                    DeadlockTestInner test = new DeadlockTestInner(this.Variables);
                     test.History = this.History.Concat(new List<bool[]>() { input }).ToList();
                     test.FunctionsLists = lists;
                     test.Inputs = this.Inputs.GetRange(i + 1, this.Inputs.Count - i - 1);

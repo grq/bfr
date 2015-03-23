@@ -1,4 +1,5 @@
 ﻿using KIMath.BooleanAlgebra;
+using KIMath.BooleanAlgebra.TestTheory;
 using KIMath.ResearchConsole.Properties;
 using System;
 using System.Collections.Generic;
@@ -15,10 +16,10 @@ namespace KIMath.ResearchConsole
         /// <summary>
         /// Для каждого класса функций алгебры логики, определённых сочетаниями свойств Поста
         /// вычислить минимальные тесты для отделения функций внутри каждого класса.
-        /// Результаты представляются в виде Word файла.
+        /// Результаты представляются в виде .docx файла.
         /// </summary>
         /// <param name="variables">Число переменных</param>
-        public static void ProcessMinimalInnerTests_Word(int variables)
+        public static void ProcessMinimalInnerTests_WordFile(int variables)
         {
             Word.Application application = new Word.Application();
             Word.Document document;
@@ -128,63 +129,89 @@ namespace KIMath.ResearchConsole
             }
         }
 
-        public static void ProcessInnerTests(int variables)
+        /// <summary>
+        /// Для каждого класса функций алгебры логики, определённых сочетаниями свойств Поста
+        /// вычислить минимальные тесты для отделения функций внутри каждого класса.
+        /// Результаты представляются в виде .txt файла.
+        /// </summary>
+        /// <param name="variables">Число переменных</param>
+        public static void ProcessMinimalInnerTests_TextFile(int variables)
         {
-            Console.WriteLine("ЭКСПЕРИМЕНТ НАЧАТ");
+            ResearchUtilities.WriteTitle("ЭКСПЕРИМЕНТ НАЧАТ");
             PostClassBooleanFunctions[] postClasses = ProcessorClassBooleanFunctions.GetPostClasses(variables).ToArray();
             Console.WriteLine("Получено разделение функций на классы");
             Console.WriteLine();
-            using (System.IO.StreamWriter file = new System.IO.StreamWriter("result.txt"))
+            StringBuilder resultString = new StringBuilder();
+            ResearchUtilities.WriteTitle("ВЫЧИСЛЕНИЯ");
+            foreach (PostClassBooleanFunctions postClass in postClasses)
             {
-                foreach (PostClassBooleanFunctions postClass in postClasses)
+                Console.WriteLine("Вычисление для класса: {0}", postClass.PostPropertiesString);
+                List<bool[]> inputs = ExcludeInputs(postClass.Functions, variables);
+                /* Завершенные тесты */
+                List<MinimalTest> completed = new List<MinimalTest>();
+                /* Незавершенные тесте */
+                List<MinimalTest> undone = new List<MinimalTest>();
+                /* Создаём новый тест */
+                MinimalTest test = new MinimalTest(variables, postClass.Functions, inputs);
+                /* Первая итерация вычисления тестов */
+                undone = test.Process();
+                /* Переменная число итераций */
+                Console.WriteLine("Итерации вычисления тестов:");
+                int y = 0;
+                /* Пока есть незавершенные тесты */
+                while (undone.Count > 0)
                 {
-                    List<bool[]> inputs = ExcludeInputs(postClass.Functions, variables);
-                    /* Завершенные тесты */
-                    List<MinimalTest> completed = new List<MinimalTest>();
-                    /* Незавершенные тесте */
-                    List<MinimalTest> undone = new List<MinimalTest>();
-                    /* Создаём новый тест */
-                    MinimalTest test = new MinimalTest(variables, postClass.Functions, inputs);
-                    undone = test.Process();
-                    int y = 0;
-                    while (undone.Count > 0)
+                    /* Увеличиваем номер итерации на 1 */
+                    y++;
+                    Console.Write(y + " ");
+                    /* Создаём новый массив тестов M */
+                    List<MinimalTest> newUndone = new List<MinimalTest>();
+                    /* Для каждого теста t */
+                    foreach (MinimalTest t in undone)
                     {
-                        y++;
-                        Console.Write(y + " ");
-                        List<MinimalTest> newUndone = new List<MinimalTest>();
-                        foreach (MinimalTest t in undone)
+                        /* В массив M добавляем результат итерации теста t */
+                        newUndone.AddRange(t.Process());
+                        /* Если тест t завершен */
+                        if (t.Comleted)
                         {
-                            newUndone.AddRange(t.Process());
-                            if (t.Comleted)
-                                completed.Add(t);
-                        }
-                        undone = newUndone;
-                    }
-                    Console.WriteLine();
-                    int minTestLength = 0;
-                    List<string> res = null;
-                    if (completed.Count > 0)
-                    {
-                        minTestLength = completed.Select(x => x.History.Count).Min();
-                        res = completed.Where(x => x.History.Count == minTestLength).Select(x => x.HistoryString).Distinct().ToList();
-                    }
-                    string line = string.Format("Класс {0}. Мощность: {1}. Минимальная длина теста: {2}. Число минимальных тестов: {3}. Тесты:",
-                        postClass.PostPropertiesString, postClass.Functions.Count, minTestLength, res != null ? res.Count.ToString() : "");
-                    file.WriteLine(line);
-                    Console.WriteLine(line);
-                    if (res != null)
-                    {
-                        foreach (string inp in res)
-                        {
-                            file.Write("( " + inp + ") ");
-                            Console.Write(inp);
-                            file.WriteLine();
+                            /* Добавляем его в массив завершенных */
+                            completed.Add(t);
                         }
                     }
-                    file.WriteLine();
+                    /* Массиву незавершенных тестов присваиваем массив M */
+                    undone = newUndone;
                 }
+                Console.WriteLine();
+                Console.WriteLine();
+                int minTestLength = 0;
+                List<string> res = null;
+                if (completed.Count > 0)
+                {
+                    minTestLength = completed.Select(x => x.History.Count).Min();
+                    res = completed.Where(x => x.History.Count == minTestLength).Select(x => x.HistoryString).Distinct().ToList();
+                }
+                resultString.AppendLine(string.Format("Класс {0}. Мощность: {1}. Минимальная длина теста: {2}. Число минимальных тестов: {3}.{4}",
+                    postClass.PostPropertiesString, postClass.Functions.Count, minTestLength, res != null ? res.Count.ToString() : "0",
+                    res != null ? " Тесты:" : string.Empty));
+                if (res != null)
+                {
+                    foreach (string inp in res)
+                    {
+                        resultString.AppendLine(inp);
+                    }
+                }
+                resultString.AppendLine();
             }
-            Console.WriteLine("ЭКСПЕРИМЕНТ ЗАКОНЧЕН");
+            string result = resultString.ToString();
+            string resultFileName = string.Format("ProcessMinimalInnerTests_TextFile_{0}_var.txt", variables);
+            using (System.IO.StreamWriter file = new System.IO.StreamWriter(resultFileName))
+            {
+                file.Write(result);
+            }
+            ResearchUtilities.WriteTitle("РЕЗУЛЬТАТЫ");
+            Console.Write(result);
+            Console.WriteLine("Результаты сохранены в файл {0}", resultFileName);
+            ResearchUtilities.WriteTitle("ЭКСПЕРИМЕНТ ЗАКОНЧЕН");
         }
 
         /// <summary>
@@ -230,6 +257,20 @@ namespace KIMath.ResearchConsole
                 }
             }
             return inputs;
+        }
+
+        public static void UseProcessor(int variables)
+        {
+            PostClassBooleanFunctions[] postClasses = ProcessorClassBooleanFunctions.GetPostClasses(variables).ToArray();
+            foreach(PostClassBooleanFunctions postClass in postClasses)
+            {
+                Console.WriteLine("-------- CLASS: " + postClass.PostPropertiesString);
+                DeadlockTestProcessor processor = new DeadlockTestProcessor(postClass, variables);
+                foreach(BooleanFunctionTest test in processor.MinimalTests)
+                {
+                    Console.WriteLine(test);
+                }
+            }
         }
     }
 }

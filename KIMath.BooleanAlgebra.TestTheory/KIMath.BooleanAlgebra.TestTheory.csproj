@@ -4,16 +4,15 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{CF5A46E0-B3FD-4E94-8217-AA510F5ACA33}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <ProjectGuid>{FCAC1FE7-8B45-4B24-ADC8-32D50882DE40}</ProjectGuid>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>KIMath.ResearchConsole</RootNamespace>
-    <AssemblyName>KIMath.ResearchConsole</AssemblyName>
+    <RootNamespace>KIMath.BooleanAlgebra.TestTheory</RootNamespace>
+    <AssemblyName>KIMath.BooleanAlgebra.TestTheory</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -23,7 +22,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -32,9 +30,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.Office.Interop.Word, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -44,35 +39,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MinimalTestsResearch.cs" />
-    <Compile Include="Program.cs" />
+    <Compile Include="BooleanFunctionTest.cs" />
+    <Compile Include="CommonProcessor.cs" />
+    <Compile Include="DeadlockTestInner.cs" />
+    <Compile Include="DeadlockTestCommon.cs" />
+    <Compile Include="DeadlockTestOuter.cs" />
+    <Compile Include="DeadlockTestProcessor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-    <Compile Include="ResearchUtilities.cs" />
+    <Compile Include="TestTheoryCommon.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
-    <None Include="Resources\Mockup_ProcessMinimalInnerTests_Word.docx" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\KIMath.BooleanAlgebra.TestTheory\KIMath.BooleanAlgebra.TestTheory.csproj">
-      <Project>{fcac1fe7-8b45-4b24-adc8-32d50882de40}</Project>
-      <Name>KIMath.BooleanAlgebra.TestTheory</Name>
-    </ProjectReference>
     <ProjectReference Include="..\KIMath.BooleanAlgebra\KIMath.BooleanAlgebra.csproj">
       <Project>{f215a23d-00aa-4671-9b38-0eb0071d2c3d}</Project>
       <Name>KIMath.BooleanAlgebra</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
