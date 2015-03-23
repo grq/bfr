@@ -11,7 +11,7 @@ namespace KIMath.ResearchConsole
     {
         static void Main(string[] args)
         {
-            MinimalTestsResearch.UseProcessor(3);
+            MinimalTestsResearch.aaaaaaaaaaaaa(3);
             Console.ReadKey();
         }
 

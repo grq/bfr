@@ -9,7 +9,7 @@ namespace KIMath.BooleanAlgebra.TestTheory
     /// <summary>
     /// Процессор для вычисления тупиковых и минимальных тестов
     /// </summary>
-    public class DeadlockTestProcessor : CommonProcessor
+    public class InnerTestProcessor : CommonProcessor
     {
         /// <summary>
         /// Класс функций алгебры логики, для которого вычисляются тесты
@@ -60,7 +60,7 @@ namespace KIMath.BooleanAlgebra.TestTheory
             {
                 if (!this._minimalTestLength.HasValue)
                 {
-                    this.ProcessDeadlockTests();
+                    this.ProcessMinimalTests();
                 }
                 return this._minimalTestLength.Value;
             }
@@ -72,7 +72,7 @@ namespace KIMath.BooleanAlgebra.TestTheory
         /// <param name="postClass">Класс функций</param>
         /// <param name="variables">Число переменных</param>
         /// <param name="useConsole">Логирование процесса вычислений в консоль</param>
-        public DeadlockTestProcessor(PostClassBooleanFunctions postClass, int variables, bool useConsole = false)
+        public InnerTestProcessor(PostClassBooleanFunctions postClass, int variables, bool useConsole = false)
         {
             this.PostClass = postClass;
             this.Variables = variables;

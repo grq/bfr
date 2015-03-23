@@ -16,260 +16,80 @@ namespace KIMath.ResearchConsole
         /// <summary>
         /// Для каждого класса функций алгебры логики, определённых сочетаниями свойств Поста
         /// вычислить минимальные тесты для отделения функций внутри каждого класса.
-        /// Результаты представляются в виде .docx файла.
-        /// </summary>
-        /// <param name="variables">Число переменных</param>
-        public static void ProcessMinimalInnerTests_WordFile(int variables)
-        {
-            Word.Application application = new Word.Application();
-            Word.Document document;
-            try
-            {
-                int count = 1;
-
-                string resultFileName = "InnerTestsResult.docx";
-                File.WriteAllBytes(resultFileName, Resources.Mockup_ProcessMinimalInnerTests_Word);
-                document = application.Documents.Open(string.Format("{0}\\{1}", Directory.GetCurrentDirectory(), resultFileName));
-                Word.Range rng = document.Range(0, document.Content.End - 1);
-                rng.Copy();
-
-                Dictionary<string, List<BooleanFunction>> classFunctions = new Dictionary<string, List<BooleanFunction>>();
-                for (int i = 0; i < BooleanAlgebraHelper.FunctionsOfVariables(variables); i++)
-                {
-                    BooleanFunction func = new BooleanFunction(i, variables);
-                    string className = func.GetPostClassString();
-                    if (!classFunctions.Keys.Contains(className))
-                        classFunctions.Add(className, new List<BooleanFunction>());
-                    classFunctions[className].Add(func);
-                }
-
-                Console.WriteLine("Functions detected");
-                Console.WriteLine();
-                foreach (string postClass in classFunctions.Keys)
-                {
-                    List<bool[]> allInputs = new List<bool[]>();
-                    for (int i = 0; i < Math.Pow(2, variables); i++)
-                    {
-                        allInputs.Add(BooleanAlgebraHelper.GetCompletedBinaryFormByVariables(i, variables));
-                    }
-                    List<bool[]> inputs = new List<bool[]>();
-                    foreach (bool[] input in allInputs)
-                    {
-                        bool inputResult = false;
-                        bool? comparer = null;
-                        foreach (BooleanFunction func in classFunctions[postClass])
-                        {
-                            if (!comparer.HasValue)
-                            {
-                                comparer = func.GetByInput(input);
-                            }
-                            else
-                            {
-                                if (comparer.Value != func.GetByInput(input))
-                                {
-                                    inputResult = true;
-                                    break;
-                                }
-                            }
-                        }
-                        if (inputResult)
-                        {
-                            inputs.Add(input);
-                        }
-                    }
-                    List<MinimalTest> completed = new List<MinimalTest>();
-                    List<MinimalTest> undone = new List<MinimalTest>();
-                    MinimalTest test = new MinimalTest();
-                    test.Variables = variables;
-                    test.FunctionsLists = new List<List<BooleanFunction>>() { classFunctions[postClass] };
-                    test.Inputs = inputs;
-                    undone = test.Process();
-
-                    int y = 0;
-                    while (undone.Count > 0)
-                    {
-                        y++;
-                        Console.Write(y + " ");
-                        List<MinimalTest> newUndone = new List<MinimalTest>();
-                        foreach (MinimalTest t in undone)
-                        {
-                            newUndone.AddRange(t.Process());
-                            if (t.Comleted)
-                                completed.Add(t);
-                        }
-                        undone = newUndone;
-                    }
-                    Console.WriteLine();
-                    int minTestLength = 0;
-                    List<string> res = null;
-                    if (completed.Count > 0)
-                    {
-                        minTestLength = completed.Select(x => x.History.Count).Min();
-                        res = completed.Where(x => x.History.Count == minTestLength).Select(x => x.HistoryString).Distinct().ToList();
-                    }
-                    Word.Range rng1 = document.Range(document.Content.End - 1, document.Content.End);
-                    rng1.Paste();
-                    ResearchUtilities.ReplaceWordText(application, "00000", count.ToString());
-                    ResearchUtilities.ReplaceWordText(application, "zzz", postClass);
-                    ResearchUtilities.ReplaceWordText(application, "7777", variables.ToString());
-                    ResearchUtilities.ReplaceWordText(application, "k", completed.Count.ToString());
-                    ResearchUtilities.ReplaceWordText(application, "W", res != null ? res.Count.ToString() : "");
-                    ResearchUtilities.ReplaceWordText(application, "q", minTestLength.ToString());
-                    count++;
-                    Console.WriteLine(postClass + ": " + minTestLength);
-                }
-                application.Documents.Save();
-                application.Visible = true;
-                Console.WriteLine("Done");
-                Console.ReadLine();
-            }
-            catch (Exception ex)
-            {
-                application.Quit();
-            }
-        }
-
-        /// <summary>
-        /// Для каждого класса функций алгебры логики, определённых сочетаниями свойств Поста
-        /// вычислить минимальные тесты для отделения функций внутри каждого класса.
         /// Результаты представляются в виде .txt файла.
         /// </summary>
         /// <param name="variables">Число переменных</param>
         public static void ProcessMinimalInnerTests_TextFile(int variables)
         {
-            ResearchUtilities.WriteTitle("ЭКСПЕРИМЕНТ НАЧАТ");
+            StringBuilder resultSb = new StringBuilder();
             PostClassBooleanFunctions[] postClasses = ProcessorClassBooleanFunctions.GetPostClasses(variables).ToArray();
-            Console.WriteLine("Получено разделение функций на классы");
-            Console.WriteLine();
-            StringBuilder resultString = new StringBuilder();
-            ResearchUtilities.WriteTitle("ВЫЧИСЛЕНИЯ");
-            foreach (PostClassBooleanFunctions postClass in postClasses)
+            foreach(PostClassBooleanFunctions postClass in postClasses)
             {
-                Console.WriteLine("Вычисление для класса: {0}", postClass.PostPropertiesString);
-                List<bool[]> inputs = ExcludeInputs(postClass.Functions, variables);
-                /* Завершенные тесты */
-                List<MinimalTest> completed = new List<MinimalTest>();
-                /* Незавершенные тесте */
-                List<MinimalTest> undone = new List<MinimalTest>();
-                /* Создаём новый тест */
-                MinimalTest test = new MinimalTest(variables, postClass.Functions, inputs);
-                /* Первая итерация вычисления тестов */
-                undone = test.Process();
-                /* Переменная число итераций */
-                Console.WriteLine("Итерации вычисления тестов:");
-                int y = 0;
-                /* Пока есть незавершенные тесты */
-                while (undone.Count > 0)
+                InnerTestProcessor processor = new InnerTestProcessor(postClass, variables); 
+                resultSb.AppendLine(string.Format("Класс {0}. Мощность: {1}. Минимальная длина теста: {2}. Число минимальных тестов: {3}.{4}",
+                     postClass.PostPropertiesString, postClass.Functions.Count, processor.MinimalTestLength, processor.MinimalTests.Count,
+                     processor.MinimalTests.Count > 0 ? " Тесты:" : string.Empty));
+                foreach(BooleanFunctionTest test in processor.MinimalTests)
                 {
-                    /* Увеличиваем номер итерации на 1 */
-                    y++;
-                    Console.Write(y + " ");
-                    /* Создаём новый массив тестов M */
-                    List<MinimalTest> newUndone = new List<MinimalTest>();
-                    /* Для каждого теста t */
-                    foreach (MinimalTest t in undone)
-                    {
-                        /* В массив M добавляем результат итерации теста t */
-                        newUndone.AddRange(t.Process());
-                        /* Если тест t завершен */
-                        if (t.Comleted)
-                        {
-                            /* Добавляем его в массив завершенных */
-                            completed.Add(t);
-                        }
-                    }
-                    /* Массиву незавершенных тестов присваиваем массив M */
-                    undone = newUndone;
+                    resultSb.AppendLine(test.ToString());
                 }
-                Console.WriteLine();
-                Console.WriteLine();
-                int minTestLength = 0;
-                List<string> res = null;
-                if (completed.Count > 0)
-                {
-                    minTestLength = completed.Select(x => x.History.Count).Min();
-                    res = completed.Where(x => x.History.Count == minTestLength).Select(x => x.HistoryString).Distinct().ToList();
-                }
-                resultString.AppendLine(string.Format("Класс {0}. Мощность: {1}. Минимальная длина теста: {2}. Число минимальных тестов: {3}.{4}",
-                    postClass.PostPropertiesString, postClass.Functions.Count, minTestLength, res != null ? res.Count.ToString() : "0",
-                    res != null ? " Тесты:" : string.Empty));
-                if (res != null)
-                {
-                    foreach (string inp in res)
-                    {
-                        resultString.AppendLine(inp);
-                    }
-                }
-                resultString.AppendLine();
+                resultSb.AppendLine();
             }
-            string result = resultString.ToString();
+            string resultString = resultSb.ToString();
             string resultFileName = string.Format("ProcessMinimalInnerTests_TextFile_{0}_var.txt", variables);
             using (System.IO.StreamWriter file = new System.IO.StreamWriter(resultFileName))
             {
-                file.Write(result);
+                file.Write(resultString);
             }
             ResearchUtilities.WriteTitle("РЕЗУЛЬТАТЫ");
-            Console.Write(result);
+            Console.Write(resultString);
             Console.WriteLine("Результаты сохранены в файл {0}", resultFileName);
             ResearchUtilities.WriteTitle("ЭКСПЕРИМЕНТ ЗАКОНЧЕН");
         }
 
         /// <summary>
-        /// Получить все наборы переменных, на которых значения хотя бы для двух функций различаются 
+        /// Для каждого класса функций алгебры логики, определённых сочетаниями свойств Поста
+        /// вычислить минимальные тесты для отделения функций внутри каждого класса.
+        /// Результаты представляются в виде .docx файла.
         /// </summary>
-        /// <param name="functions">Множество функций</param>
         /// <param name="variables">Число переменных</param>
-        private static List<bool[]> ExcludeInputs(IEnumerable<BooleanFunction> functions, int variables)
+        public static void ProcessMinimalInnerTests_WordFile(int variables)
         {
-
-            List<bool[]> allInputs = BooleanAlgebraHelper.GetAllInputs(variables);
-            List<bool[]> inputs = new List<bool[]>();
-            /* Для каждого набора переменных из всех возможных */
-            foreach (bool[] input in allInputs)
+            Console.WriteLine("Идёт создание Word-файла...");
+            Word.Application application = new Word.Application();
+            Word.Document document;
+            try
             {
-                bool inputResult = false;
-                bool? comparer = null;
-                /* Просматриваем каждую функцию */
-                foreach (BooleanFunction func in functions)
+                int count = 1;
+                string resultFileName = "InnerTestsResult.docx";
+                File.WriteAllBytes(resultFileName, Resources.Mockup_ProcessMinimalInnerTests_Word);
+                document = application.Documents.Open(string.Format("{0}\\{1}", Directory.GetCurrentDirectory(), resultFileName));
+                Word.Range rng = document.Range(0, document.Content.End - 1);
+                rng.Copy();
+                PostClassBooleanFunctions[] postClasses = ProcessorClassBooleanFunctions.GetPostClasses(variables).ToArray();
+                foreach (PostClassBooleanFunctions postClass in postClasses)
                 {
-                    /* Если сравнитель не определён */
-                    if (!comparer.HasValue)
-                    {
-                        /* Присваиваем ему значение первой функции на этом наборе */
-                        comparer = func.GetByInput(input);
-                    }
-                    /* Если сравнитель определён */
-                    else
-                    {
-                        /* Сравниваем его со значением функции на этом наборе */
-                        if (comparer.Value != func.GetByInput(input))
-                        {
-                            /* Если значения не совпадают... */
-                            inputResult = true;
-                            break;
-                        }
-                    }
+                    InnerTestProcessor processor = new InnerTestProcessor(postClass, variables);
+                    Word.Range rng1 = document.Range(document.Content.End - 1, document.Content.End);
+                    rng1.Paste();
+                    ResearchUtilities.ReplaceWordText(application, "88888", count.ToString());
+                    ResearchUtilities.ReplaceWordText(application, "zzz", postClass.PostPropertiesString);
+                    ResearchUtilities.ReplaceWordText(application, "7777", variables.ToString());
+                    ResearchUtilities.ReplaceWordText(application, "W", processor.MinimalTests.Count.ToString());
+                    ResearchUtilities.ReplaceWordText(application, "q", processor.MinimalTestLength.ToString());
+                    count++;
                 }
-                /* ...добавляем этот набор в результат */
-                if (inputResult)
-                {
-                    inputs.Add(input);
-                }
+                rng.Delete();
+                application.Documents.Save();
+                application.Visible = true;
+                Console.WriteLine("Word-файл создан. Нажмите любую клавишу для закрытия.");
+                Console.ReadKey();
+                application.Quit();
             }
-            return inputs;
-        }
-
-        public static void UseProcessor(int variables)
-        {
-            PostClassBooleanFunctions[] postClasses = ProcessorClassBooleanFunctions.GetPostClasses(variables).ToArray();
-            foreach(PostClassBooleanFunctions postClass in postClasses)
+            catch (Exception ex)
             {
-                Console.WriteLine("-------- CLASS: " + postClass.PostPropertiesString);
-                DeadlockTestProcessor processor = new DeadlockTestProcessor(postClass, variables);
-                foreach(BooleanFunctionTest test in processor.MinimalTests)
-                {
-                    Console.WriteLine(test);
-                }
+                application.Quit();
+                Console.WriteLine(ex.Message);
             }
         }
     }
