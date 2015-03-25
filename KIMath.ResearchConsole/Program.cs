@@ -13,8 +13,63 @@ namespace KIMath.ResearchConsole
         static void Main(string[] args)
         {
             //MinimalTestsResearch.ProcessMinimalOuterTests(3);
-            Test();
+            NewTest();
             Console.ReadKey();
+        }
+
+        static void NewTest()
+        {
+            int vars = 3;
+            List<PostClassBooleanFunctions> postClasses = ProcessorClassBooleanFunctions.GetPostClasses(vars).ToList();
+            List<BooleanFunction> F1 = new List<BooleanFunction>() { new BooleanFunction("01111111", vars), new BooleanFunction("01011111", vars) };
+            List<BooleanFunction> F2 = new List<BooleanFunction>() { new BooleanFunction("00111111", vars) };
+            List<BooleanFunction> F3 = new List<BooleanFunction>() { new BooleanFunction("10111111", vars) };
+            List<bool[]> allInputs = BooleanAlgebraHelper.GetAllInputs(vars);
+
+            List<FunctionsTestPair> basePairs = new List<FunctionsTestPair>();
+            basePairs.Add(new FunctionsTestPair() { FuncsA = F1, FuncsB = F2 });
+            basePairs.Add(new FunctionsTestPair() { FuncsA = F1, FuncsB = F3 });
+            basePairs.Add(new FunctionsTestPair() { FuncsA = F2, FuncsB = F3 });
+
+            List<TreeNode> resultNodes = new List<TreeNode>();
+
+            List<TreeNode> nodes = new List<TreeNode>();
+            List<TreeNode> completed = new List<TreeNode>();
+            foreach (bool[] input in allInputs)
+            {
+                TreeNode node = new TreeNode(basePairs, input);
+                TreeNode resNode = node.Process();
+                if (node.Completed)
+                {
+                    completed.Add(node);
+                }
+                else if (node.ResultPairs != null)
+                {
+                    nodes.Add(resNode);
+                }
+            }
+            while(nodes.Count > 0)
+            {
+                List<TreeNode> newNodes = new List<TreeNode>();
+                foreach(TreeNode node in nodes)
+                {
+                    foreach (bool[] input in allInputs)
+                    {
+                        TreeNode childNode = node.CreateChildNode(input);
+                        TreeNode resultTreeNode = childNode.Process();
+                        if (childNode.Completed)
+                        {
+                            completed.Add(childNode);
+                        }
+                        else if (resultTreeNode != null)
+                        {
+                            newNodes.Add(resultTreeNode);
+                        }
+                    }
+                }
+                nodes = newNodes;
+            }
+            var res = completed.Select(x => x.HistoryString).Distinct();
         }
 
         static void Test()
@@ -61,9 +116,11 @@ namespace KIMath.ResearchConsole
             Console.WriteLine();
             int minTestLength = 0;
             List<string> res = null;
+            List<List<bool[]>> tests = new List<List<bool[]>>();
             if (completed.Count > 0)
             {
                 minTestLength = completed.Select(x => x.History.Count).Min();
+                tests = completed.Select(x => x.History).ToList();
                 res = completed.Where(x => x.History.Count == minTestLength).Select(x => x.HistoryString).Distinct().ToList();
             }
             string info1 = string.Format("{4}) Класс 1: {0} ({1}) - Класс 2: {2} ({3}) - Класс 3: {5} ({6}):",
@@ -84,6 +141,58 @@ namespace KIMath.ResearchConsole
                     Console.WriteLine();
                 }
             }
+
+            // проверка
+            var deadlocktest = tests[0];
+            Console.WriteLine("K1 - K2");
+            foreach (BooleanFunction f1 in list1.Functions)
+            {
+                string f1String = BooleanAlgebraHelper.BinaryToString(f1.GetByInputs(deadlocktest));
+                foreach (BooleanFunction f2 in list2.Functions)
+                {
+                    string f2String = BooleanAlgebraHelper.BinaryToString(f2.GetByInputs(deadlocktest));
+                   // Console.WriteLine("{0} - {1}", f1String, f2String);
+                    if (f1String == f2String)
+                    {
+                        Console.WriteLine("{0} - {1}", f1String, f2String);
+                        Console.WriteLine("Error!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                    }
+                }
+            }
+
+            Console.WriteLine("K1 - K3");
+            foreach (BooleanFunction f1 in list1.Functions)
+            {
+                string f1String = BooleanAlgebraHelper.BinaryToString(f1.GetByInputs(deadlocktest));
+                foreach (BooleanFunction f2 in list3.Functions)
+                {
+                    string f2String = BooleanAlgebraHelper.BinaryToString(f2.GetByInputs(deadlocktest));
+                  //  Console.WriteLine("{0} - {1}", f1String, f2String);
+                    if (f1String == f2String)
+                    {
+                        Console.WriteLine("{0} - {1}", f1String, f2String);
+                        Console.WriteLine("Error!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                    }
+                }
+            }
+
+            Console.WriteLine("K2 - K3");
+            foreach (BooleanFunction f1 in list2.Functions)
+            {
+                string f1String = BooleanAlgebraHelper.BinaryToString(f1.GetByInputs(deadlocktest));
+                foreach (BooleanFunction f2 in list3.Functions)
+                {
+                    string f2String = BooleanAlgebraHelper.BinaryToString(f2.GetByInputs(deadlocktest));
+                  //  Console.WriteLine("{0} - {1}", f1String, f2String);
+                    if (f1String == f2String)
+                    {
+                        Console.WriteLine("{0} - {1}", f1String, f2String);
+                        Console.WriteLine("Error!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                    }
+                }
+            }
+
+            Console.WriteLine("DONE");
         }
     }
 }
