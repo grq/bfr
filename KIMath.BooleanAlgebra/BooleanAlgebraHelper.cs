@@ -324,6 +324,34 @@ namespace KIMath.BooleanAlgebra
             return result;
         }
 
+        static public List<List<T>> GetAllCombinations<T>(IEnumerable<T> array, int capacity)
+        {
+            List<List<T>> result = new List<List<T>>();
+            CombinationsRecursion<T>(0, array.ToArray().Length - capacity + 1, 0, capacity, array.ToList(), ref result);
+            return result;
+        }
+
         #endregion
+
+        private static void CombinationsRecursion<T>(int min, int max, int rec, int capacity, List<T> originals, ref List<List<T>> result, int[] arr = null)
+        {
+            if (arr == null)
+            {
+                arr = new int[originals.Count];
+            }
+            for(int i=min; i < max; i++){
+                arr[rec] = i;
+                if(rec == capacity -1){
+                    List<T> res = new List<T>();
+                    for(int m = 0; m < capacity; m++){
+                        res.Add(originals[arr[m]]);
+                    }
+                    result.Add(res);
+                    continue;
+                }
+                if(i==max) break;
+                CombinationsRecursion(i + 1, max + 1, rec + 1, capacity, originals, ref result, arr);
+            }
+        }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using KIMath.BooleanAlgebra.TestTheory;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace KIMath.BooleanAlgebra
 {
-    public class DeadlockTestOuter : DeadlockTestCommon // todo internal
+    internal class OuterTest : TestCommon
     {
         public bool Comleted { get; set; }
 
@@ -20,20 +21,20 @@ namespace KIMath.BooleanAlgebra
 
         public string HistoryString { get; set; }
 
-        public DeadlockTestOuter()
+        public OuterTest()
             : base()
         {
             this.History = new List<bool[]>();
         }
 
-        public DeadlockTestOuter(int variables)
+        public OuterTest(int variables)
             : base()
         {
             this.Variables = variables;
             this.History = new List<bool[]>();
         }
 
-        public DeadlockTestOuter(int variables, IEnumerable<BooleanFunction> functions, List<bool[]> inputs)
+        public OuterTest(int variables, IEnumerable<BooleanFunction> functions, List<bool[]> inputs)
             : base()
         {
             this.Variables = variables;
@@ -42,9 +43,9 @@ namespace KIMath.BooleanAlgebra
             this.History = new List<bool[]>();
         }
 
-        public List<DeadlockTestOuter> Process()
+        public List<OuterTest> Process()
         {
-            List<DeadlockTestOuter> result = new List<DeadlockTestOuter>();
+            List<OuterTest> result = new List<OuterTest>();
             this.Comleted = this.FunctionsLists.Count == 0;
             if (this.Comleted)
             {
@@ -97,7 +98,7 @@ namespace KIMath.BooleanAlgebra
                             lists.Add(negativeFunctionsOut.Concat(negativeFunctionsIn).ToList());
                         }
                     }
-                    DeadlockTestOuter test = new DeadlockTestOuter(this.Variables);
+                    OuterTest test = new OuterTest(this.Variables);
                     test.History = this.History.Concat(new List<bool[]>() { input }).ToList();
                     test.FunctionsLists = lists;
                     test.Inputs = this.Inputs.GetRange(i + 1, this.Inputs.Count - i - 1);
@@ -107,9 +108,9 @@ namespace KIMath.BooleanAlgebra
             return result;
         }
 
-        public List<DeadlockTestOuter> Process2()
+        public List<OuterTest> Process2()
         {
-            List<DeadlockTestOuter> result = new List<DeadlockTestOuter>();
+            List<OuterTest> result = new List<OuterTest>();
             this.Comleted = this.FunctionsLists.Count == 0;
             if (this.Comleted)
             {
@@ -166,7 +167,7 @@ namespace KIMath.BooleanAlgebra
                             lists.Add(fns);
                         }
                     }
-                    DeadlockTestOuter test = new DeadlockTestOuter(this.Variables);
+                    OuterTest test = new OuterTest(this.Variables);
                     test.Marks = this.Marks;
                     test.History = this.History.Concat(new List<bool[]>() { input }).ToList();
                     test.FunctionsLists = lists;
@@ -175,6 +176,11 @@ namespace KIMath.BooleanAlgebra
                 }
             }
             return result;
+        }
+
+        public void Process3()
+        {
+            
         }
     }
 }

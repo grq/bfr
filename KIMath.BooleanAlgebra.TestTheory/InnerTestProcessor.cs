@@ -17,56 +17,6 @@ namespace KIMath.BooleanAlgebra.TestTheory
         public PostClassBooleanFunctions PostClass { get; private set; }
 
         /// <summary>
-        /// Число переменных
-        /// </summary>
-        public int Variables { get; private set; }
-
-        /// <summary>
-        /// Тупиковые тесты
-        /// </summary>
-        public List<BooleanFunctionTest> DeadlockTests
-        {
-            get
-            {
-                if (this._deadlockTests == null)
-                {
-                    this.ProcessDeadlockTests();
-                }
-                return this._deadlockTests;
-            }
-        }
-
-        /// <summary>
-        /// Минимальные тесты
-        /// </summary>
-        public List<BooleanFunctionTest> MinimalTests
-        {
-            get
-            {
-                if (this._minimalTests == null)
-                {
-                    this.ProcessMinimalTests();
-                }
-                return this._minimalTests;
-            }
-        }
-
-        /// <summary>
-        /// Длина минимального теста
-        /// </summary>
-        public int MinimalTestLength
-        {
-            get
-            {
-                if (!this._minimalTestLength.HasValue)
-                {
-                    this.ProcessMinimalTests();
-                }
-                return this._minimalTestLength.Value;
-            }
-        }
-
-        /// <summary>
         /// Конструктор
         /// </summary>
         /// <param name="postClass">Класс функций</param>
@@ -79,22 +29,16 @@ namespace KIMath.BooleanAlgebra.TestTheory
             this._useConsole = useConsole;
         }
 
-        private List<BooleanFunctionTest> _deadlockTests;
-
-        private List<BooleanFunctionTest> _minimalTests;
-
-        private int? _minimalTestLength;
-
-        private void ProcessDeadlockTests()
+        protected override void ProcessDeadlockTests()
         {
             this.ConsoleWriteLine(string.Format("Вычисление для класса: {0}", this.PostClass.PostPropertiesString));
             List<bool[]> inputs = TestTheoryCommon.ExcludeInputs(this.PostClass.Functions, this.Variables);
             /* Завершенные тесты */
-            List<DeadlockTestInner> completed = new List<DeadlockTestInner>();
+            List<InnerTest> completed = new List<InnerTest>();
             /* Незавершенные тесте */
-            List<DeadlockTestInner> undone = new List<DeadlockTestInner>();
+            List<InnerTest> undone = new List<InnerTest>();
             /* Создаём новый тест */
-            DeadlockTestInner test = new DeadlockTestInner(this.Variables, this.PostClass.Functions, inputs);
+            InnerTest test = new InnerTest(this.Variables, this.PostClass.Functions, inputs);
             /* Первая итерация вычисления тестов */
             undone = test.Process();
             /* Переменная число итераций */
@@ -107,9 +51,9 @@ namespace KIMath.BooleanAlgebra.TestTheory
                 y++;
                 this.ConsoleWrite(y + " ");
                 /* Создаём новый массив тестов M */
-                List<DeadlockTestInner> newUndone = new List<DeadlockTestInner>();
+                List<InnerTest> newUndone = new List<InnerTest>();
                 /* Для каждого теста t */
-                foreach (DeadlockTestInner t in undone)
+                foreach (InnerTest t in undone)
                 {
                     /* В массив M добавляем результат итерации теста t */
                     newUndone.AddRange(t.Process());
@@ -126,24 +70,6 @@ namespace KIMath.BooleanAlgebra.TestTheory
             this.ConsoleWriteLine();
             this.ConsoleWriteLine();
             this._deadlockTests = completed.Select(x => new BooleanFunctionTest(x.History)).Distinct().ToList();
-        }
-
-        private void ProcessMinimalTests()
-        {
-            if (this._deadlockTests == null)
-            {
-                this.ProcessDeadlockTests();
-            }
-            if (this._deadlockTests.Count == 0)
-            {
-                this._minimalTestLength = 0;
-                this._minimalTests = new List<BooleanFunctionTest>();
-            }
-            else
-            {
-                this._minimalTestLength = this._deadlockTests.Select(x => x.Length).Min();
-                this._minimalTests = this._deadlockTests.Where(x => x.Length == this._minimalTestLength).Distinct().ToList();
-            }
         }
     }
 }

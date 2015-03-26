@@ -6,16 +6,24 @@ using System.Threading.Tasks;
 
 namespace KIMath.BooleanAlgebra.TestTheory
 {
-    public class OuterTestProcessor
+    public class OuterTestProcessor: CommonProcessor
     {
         public int Variables { get; private set; }
 
         public bool Result { get; private set; }
 
-        public OuterTestProcessor(int variables)
+        public List<PostClassBooleanFunctions> PostClasses { get; private set; }
+
+        public OuterTestProcessor(int variables, params PostClassBooleanFunctions[] list)
         {
             this.Variables = variables;
-            this.Result = BooleanAlgebraHelper.CollectionAreEquals<int>(this.Process(), this.Process2());
+            this.PostClasses = list.ToList();
+        }
+
+        public OuterTestProcessor(int variables, IEnumerable<PostClassBooleanFunctions> postClasses)
+        {
+            this.Variables = variables;
+            this.PostClasses = postClasses.ToList();
         }
 
         private List<int> Process()
@@ -47,9 +55,9 @@ namespace KIMath.BooleanAlgebra.TestTheory
                             functions.AddRange(secondClass.Functions);
                             // убираем ненужные наборы переменных
                             List<bool[]> inputs = TestTheoryCommon.ExcludeInputs(functions, this.Variables);
-                            List<DeadlockTestOuter> completed = new List<DeadlockTestOuter>(); // незаконченные тесты
-                            List<DeadlockTestOuter> undone = new List<DeadlockTestOuter>(); // законченные тесты
-                            DeadlockTestOuter test = new DeadlockTestOuter(this.Variables, functions, inputs);
+                            List<OuterTest> completed = new List<OuterTest>(); // незаконченные тесты
+                            List<OuterTest> undone = new List<OuterTest>(); // законченные тесты
+                            OuterTest test = new OuterTest(this.Variables, functions, inputs);
                             // первая итерация тестов
                             undone = test.Process();
                             int y = 0;
@@ -57,8 +65,8 @@ namespace KIMath.BooleanAlgebra.TestTheory
                             {
                                 y++;
                                 //Console.Write(y + " ");
-                                List<DeadlockTestOuter> newUndone = new List<DeadlockTestOuter>();
-                                foreach (DeadlockTestOuter t in undone)
+                                List<OuterTest> newUndone = new List<OuterTest>();
+                                foreach (OuterTest t in undone)
                                 {
                                     newUndone.AddRange(t.Process());
                                     if (t.Comleted)
@@ -134,9 +142,9 @@ namespace KIMath.BooleanAlgebra.TestTheory
                             functions.AddRange(secondClass.Functions);
                             // убираем ненужные наборы переменных
                             List<bool[]> inputs = TestTheoryCommon.ExcludeInputs(functions, this.Variables);
-                            List<DeadlockTestOuter> completed = new List<DeadlockTestOuter>(); // незаконченные тесты
-                            List<DeadlockTestOuter> undone = new List<DeadlockTestOuter>(); // законченные тесты
-                            DeadlockTestOuter test = new DeadlockTestOuter(this.Variables, functions, inputs);
+                            List<OuterTest> completed = new List<OuterTest>(); // незаконченные тесты
+                            List<OuterTest> undone = new List<OuterTest>(); // законченные тесты
+                            OuterTest test = new OuterTest(this.Variables, functions, inputs);
                             // первая итерация тестов
                             undone = test.Process2();
                             int y = 0;
@@ -144,8 +152,8 @@ namespace KIMath.BooleanAlgebra.TestTheory
                             {
                                 y++;
                                 //Console.Write(y + " ");
-                                List<DeadlockTestOuter> newUndone = new List<DeadlockTestOuter>();
-                                foreach (DeadlockTestOuter t in undone)
+                                List<OuterTest> newUndone = new List<OuterTest>();
+                                foreach (OuterTest t in undone)
                                 {
                                     newUndone.AddRange(t.Process2());
                                     if (t.Comleted)
@@ -190,6 +198,57 @@ namespace KIMath.BooleanAlgebra.TestTheory
             }
             Console.WriteLine("Done");
             return resultHash;
+        }
+
+        protected override void ProcessDeadlockTests()
+        {
+            List<BooleanFunction> allFunctions = this.PostClasses.SelectMany(x => x.Functions).ToList();
+            List<bool[]> inputs = TestTheoryCommon.ExcludeInputs(allFunctions, this.Variables);
+            List<OuterTestFunctionsPair> basePairs = new List<OuterTestFunctionsPair>();
+            for (int i = 0; i < this.PostClasses.Count - 1; i++)
+            {
+                for (int j = i + 1; j < this.PostClasses.Count; j++)
+                {
+                    basePairs.Add(new OuterTestFunctionsPair(this.PostClasses[i].Functions, this.PostClasses[j].Functions));
+                }
+            }
+            List<OuterTestTreeNode> currentNodes = new List<OuterTestTreeNode>();
+            List<OuterTestTreeNode> deadLockNodes = new List<OuterTestTreeNode>();
+            foreach (bool[] input in inputs)
+            {
+                OuterTestTreeNode node = new OuterTestTreeNode(basePairs, input);
+                OuterTestTreeNode resNode = node.Process();
+                if (node.Completed)
+                {
+                    deadLockNodes.Add(node);
+                }
+                else if (node.ResultPairs != null)
+                {
+                    currentNodes.Add(resNode);
+                }
+            }
+            while (currentNodes.Count > 0)
+            {
+                List<OuterTestTreeNode> newNodes = new List<OuterTestTreeNode>();
+                foreach (OuterTestTreeNode node in currentNodes)
+                {
+                    foreach (bool[] input in inputs)
+                    {
+                        OuterTestTreeNode childNode = node.CreateChildNode(input);
+                        OuterTestTreeNode resultTreeNode = childNode.Process();
+                        if (childNode.Completed)
+                        {
+                            deadLockNodes.Add(childNode);
+                        }
+                        else if (resultTreeNode != null)
+                        {
+                            newNodes.Add(resultTreeNode);
+                        }
+                    }
+                }
+                currentNodes = newNodes;
+            }
+            this._deadlockTests = deadLockNodes.Select(x => x.GetTest()).Distinct().ToList();
         }
     }
 }

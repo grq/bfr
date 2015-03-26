@@ -9,23 +9,23 @@ namespace KIMath.BooleanAlgebra
     /// <summary>
     /// Тупиковый тест - Базовый класс
     /// </summary>
-    public abstract class DeadlockTestCommon //todo internal
+    internal abstract class TestCommon
     {
-        public List<DeadlockTestCommon> ChildTest { get; set; }
+        public List<TestCommon> ChildTest { get; set; }
 
         public List<bool[]> History { get; set; }
 
         public List<bool[]> Inputs { get; set; }
 
-        public DeadlockTestCommon()
+        public TestCommon()
         {
-            this.ChildTest = new List<DeadlockTestCommon>();
+            this.ChildTest = new List<TestCommon>();
         }
 
-        public List<DeadlockTestCommon> GetCompleteTests()
+        public List<TestCommon> GetCompleteTests()
         {
-            List<DeadlockTestCommon> result = new List<DeadlockTestCommon>();
-            foreach (DeadlockTestInner tst in this.ChildTest)
+            List<TestCommon> result = new List<TestCommon>();
+            foreach (InnerTest tst in this.ChildTest)
             {
                 if (tst.ChildTest.Count == 0)
                 {
@@ -39,10 +39,10 @@ namespace KIMath.BooleanAlgebra
             return result;
         }
 
-        public List<DeadlockTestCommon> GetCompleteTestsString()
+        public List<TestCommon> GetCompleteTestsString()
         {
-            List<DeadlockTestCommon> result = new List<DeadlockTestCommon>();
-            foreach (DeadlockTestCommon tst in this.ChildTest)
+            List<TestCommon> result = new List<TestCommon>();
+            foreach (TestCommon tst in this.ChildTest)
             {
                 if (tst.ChildTest.Count == 0 && tst.History != this.Inputs)
                 {

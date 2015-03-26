@@ -93,10 +93,48 @@ namespace KIMath.ResearchConsole
             }
         }
 
-        public static void ProcessMinimalOuterTests(int variables)
+        /// <summary>
+        /// Для любого количества классов функций алгебры логики, определить тесты для отделения функций между классами
+        /// </summary>
+        /// <param name="variables"></param>
+        public static void ProcessMinimalOuterTestsForSelected(int variables, List<PostClassBooleanFunctions> postClasses)
         {
-            var a = new OuterTestProcessor(variables);
-            Console.WriteLine("!!!!!!!!!!!!!!!!!!!!!!! RESULT: " + a.Result);
+            OuterTestProcessor otp = new OuterTestProcessor(variables, postClasses);
+            ResearchUtilities.WriteTitle("ФУНКЦИИ КЛАССОВ");
+            foreach (PostClassBooleanFunctions postClass in otp.PostClasses)
+            {
+                Console.WriteLine("Класс {0}:\n", postClass.PostPropertiesString);
+                postClass.Functions.ToList().ForEach(x => Console.WriteLine(x.ToString()));
+                Console.WriteLine();
+            }
+            ResearchUtilities.WriteTitle("ТУПИКОВЫЕ ТЕСТЫ");
+            otp.DeadlockTests.ToList().ForEach(x => Console.WriteLine(x.ToString()));
+            Console.WriteLine();
+            ResearchUtilities.WriteTitle("МИНИМАЛЬНЫЕ ТЕСТЫ");
+            Console.WriteLine("Минимальная длина теста: {0}\n", otp.MinimalTestLength);
+            for (int i = 0; i < otp.MinimalTests.Count; i++)
+            {
+                Console.WriteLine("--- Тест {0} ---\n\n{1}\n\nПроверка:\n---", i + 1, otp.MinimalTests[i]);
+                foreach (PostClassBooleanFunctions postClass in otp.PostClasses)
+                {
+                    postClass.Functions.ToList().ForEach(x => Console.WriteLine(BooleanAlgebraHelper.BinaryToString(x.GetByInputs(otp.MinimalTests[i].Inputs))));
+                    Console.WriteLine("---");
+                }
+                Console.WriteLine();
+            }
+        }
+
+        public static void ProcessMinimalOuterTests(int variables, int capacity)
+        {
+            List<PostClassBooleanFunctions> classes = ProcessorClassBooleanFunctions.GetPostClasses(variables).ToList();
+            List<List<PostClassBooleanFunctions>> combinations = BooleanAlgebraHelper.GetAllCombinations<PostClassBooleanFunctions>(classes, capacity);
+            foreach(List<PostClassBooleanFunctions> combination in combinations)
+            {
+                OuterTestProcessor otp = new OuterTestProcessor(variables, combination);
+                Console.WriteLine(string.Join(" ", combination.Select(x => x.PostPropertiesString)));
+                Console.WriteLine("Длина минимального теста: {0}. Число минимальных тестов: {1}.", otp.MinimalTestLength, otp.MinimalTests.Count);
+                Console.WriteLine();
+            }
         }
     }
 }

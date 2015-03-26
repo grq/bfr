@@ -41,11 +41,13 @@
   <ItemGroup>
     <Compile Include="BooleanFunctionTest.cs" />
     <Compile Include="CommonProcessor.cs" />
-    <Compile Include="DeadlockTestInner.cs" />
-    <Compile Include="DeadlockTestCommon.cs" />
-    <Compile Include="DeadlockTestOuter.cs" />
+    <Compile Include="InnerTest.cs" />
+    <Compile Include="OuterTestFunctionsPair.cs" />
+    <Compile Include="TestCommon.cs" />
+    <Compile Include="OuterTest.cs" />
     <Compile Include="InnerTestProcessor.cs" />
     <Compile Include="OuterTestProcessor.cs" />
+    <Compile Include="OuterTestTreeNode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestTheoryCommon.cs" />
   </ItemGroup>
