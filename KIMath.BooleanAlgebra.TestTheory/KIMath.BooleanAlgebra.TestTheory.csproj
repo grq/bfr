@@ -44,7 +44,6 @@
     <Compile Include="InnerTest.cs" />
     <Compile Include="OuterTestFunctionsPair.cs" />
     <Compile Include="TestCommon.cs" />
-    <Compile Include="OuterTest.cs" />
     <Compile Include="InnerTestProcessor.cs" />
     <Compile Include="OuterTestProcessor.cs" />
     <Compile Include="OuterTestTreeNode.cs" />

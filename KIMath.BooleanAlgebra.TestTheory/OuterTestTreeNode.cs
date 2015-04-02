@@ -10,13 +10,17 @@ namespace KIMath.BooleanAlgebra.TestTheory
     {
         public List<OuterTestFunctionsPair> Pairs { get; set; }
 
-        public List<OuterTestFunctionsPair> ResultPairs { get; set; }
-
         public List<bool[]> History { get; set; }
 
-        public List<string> HistoryString { get; set; }
+        public List<string> HistoryString 
+        { 
+            get
+            {
+                return this.History.Select(x => BooleanAlgebraHelper.BinaryToString(x)).OrderBy(x => x).ToList();
+            }
+        }
 
-        public bool Completed { get; set; }
+        public bool IsDeadlock { get; set; }
 
         public bool[] Input { get; set; }
 
@@ -29,7 +33,6 @@ namespace KIMath.BooleanAlgebra.TestTheory
             }
             this.BiggestInputDec = -1;
             this.History = new List<bool[]>();
-            this.HistoryString = new List<string>();
             if (parent != null)
             {
                 this.BiggestInputDec = parent.BiggestInputDec;
@@ -47,36 +50,21 @@ namespace KIMath.BooleanAlgebra.TestTheory
 
         public OuterTestTreeNode Process()
         {
-            List<OuterTestFunctionsPair> result = new List<OuterTestFunctionsPair>();
-            string inputString = BooleanAlgebraHelper.BinaryToString(this.Input);
-
-            // убрать возрастающий индекс
-
-            if (BooleanAlgebraHelper.BinaryToDec(this.Input) > this.BiggestInputDec)
-
-            //
-            //if (!this.HistoryString.Contains(inputString))
+            if (BooleanAlgebraHelper.BinaryToDec(this.Input) > this.BiggestInputDec) // убираем возрастающий индекс
             {
+                List<OuterTestFunctionsPair> result = new List<OuterTestFunctionsPair>();
                 this.BiggestInputDec = BooleanAlgebraHelper.BinaryToDec(this.Input);
                 this.History.Add(this.Input);
-                this.HistoryString.Add(inputString);
-                this.HistoryString = this.HistoryString.OrderBy(x => x).ToList();
-
                 foreach (OuterTestFunctionsPair pair in this.Pairs)
                 {
                     result.AddRange(pair.Separate(this.Input));
                 }
-                this.Completed = true;
-                foreach (OuterTestFunctionsPair pair in result)
+                this.IsDeadlock = true;
+                result.ForEach(x => this.IsDeadlock = this.IsDeadlock && x.IsDeadlock);
+                if (result.Count > 0)
                 {
-                    if (!pair.Completed)
-                    {
-                        this.Completed = false;
-                        break;
-                    }
+                    return new OuterTestTreeNode(result.Where(x => !x.IsDeadlock).ToList(), null, this);
                 }
-                this.ResultPairs = result;
-                return new OuterTestTreeNode(result.Where(x => !x.Completed).ToList(), null, this);
             }
             return null;
         }

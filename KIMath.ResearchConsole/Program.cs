@@ -12,7 +12,54 @@ namespace KIMath.ResearchConsole
     {
         static void Main(string[] args)
         {
-            MinimalTestsResearch.ProcessMinimalOuterTests(3, 8);
+            //MinimalTestsResearch.ProcessMinimalOuterTests(3, 8);
+            //var oldtt = MinimalTestsResearch.GetOldHash(4);
+            //var newt = MinimalTestsResearch.GetNewHash(3);
+
+            string resultFileName = string.Format("result_{0}.txt", DateTime.Now.ToString("yyyy-MM-dd--hh-mm-ss"));
+            int variables = 4;
+            List<int> hash = new List<int>();
+            List<PostClassBooleanFunctions> classes = ProcessorClassBooleanFunctions.GetPostClasses(variables).ToList();
+            StringBuilder sb = new StringBuilder();
+            List<List<PostClassBooleanFunctions>> combinations = BooleanAlgebraHelper.GetAllCombinations<PostClassBooleanFunctions>(classes, 2);
+            foreach (List<PostClassBooleanFunctions> combination in combinations)
+            {
+                OuterTestProcessor otp = new OuterTestProcessor(variables, combination);
+                sb.AppendLine(string.Format("{0} {1} {2} {3}", combination[0].PostPropertiesString, combination[1].PostPropertiesString,
+                         otp.MinimalTestLength, otp.MinimalTests.Count));
+                using (System.IO.StreamWriter file = new System.IO.StreamWriter(resultFileName))
+                {
+                    file.Write(sb.ToString());
+                }
+                hash.Add(otp.MinimalTestLength);
+                hash.Add(otp.MinimalTests.Count);
+            }
+            var a = hash;
+
+            //List<int> hash = new List<int>();
+            //List<PostClassBooleanFunctions> combination = new List<PostClassBooleanFunctions>();
+            //combination.Add(ProcessorClassBooleanFunctions.GetPostClass("00000", 4));
+            //combination.Add(ProcessorClassBooleanFunctions.GetPostClass("00100", 4));
+            //OuterTestProcessor otp = new OuterTestProcessor(4, combination);
+            //using (System.IO.StreamWriter file = new System.IO.StreamWriter(resultFileName))
+            //{
+            //    string str = string.Format("{0} {1} {2} {3}")
+            //    file.Write(resultString);
+            //}
+            //hash.Add(otp.MinimalTestLength);
+            //hash.Add(otp.MinimalTests.Count);
+
+            int[] oldt = new int[] { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 2, 6, 1, 6, 1, 1, 2, 1, 2, 1, 2, 1, 
+                2, 6, 1, 6, 1, 1, 2, 1, 2, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 12, 1, 2, 1, 2, 
+                1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 2, 1, 8, 1, 1, 1, 1, 1, 1, 1, 1, 1, 
+                1, 1, 4, 1, 4, 1, 1, 6, 1, 6, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 12, 1, 1, 1, 1, 
+                1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 4, 1, 4, 1, 1, 6, 1, 1, 2, 1, 2, 
+                6, 1, 3, 2, 6, 1, 6, 1, 1, 2, 1, 2, 4, 9, 6, 1, 2, 9, 6, 1, 3, 8, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 
+                1, 2, 1, 2, 2, 12, 3, 8, 3, 8, 1, 6, 3, 8, 2, 12 };
+            //bool res = BooleanAlgebraHelper.CollectionAreEquals<int>(oldt, oldtt);
+
+            //Console.WriteLine(res);
+
             //List<PostClassBooleanFunctions> clss = new List<PostClassBooleanFunctions>();
             //clss.Add(ProcessorClassBooleanFunctions.GetPostClass("11101", 3));
             //clss.Add(ProcessorClassBooleanFunctions.GetPostClass("11110", 3));
@@ -20,61 +67,223 @@ namespace KIMath.ResearchConsole
             //MinimalTestsResearch.ProcessMinimalOuterTestsForSelected(3, clss);
             Console.WriteLine("DONE");
             Console.ReadKey();
-        }
 
-        static void NewTest()
-        {
-            int vars = 3;
-            List<PostClassBooleanFunctions> postClasses = ProcessorClassBooleanFunctions.GetPostClasses(vars).ToList();
-            List<BooleanFunction> F1 = new List<BooleanFunction>() { new BooleanFunction("01111111", vars) };
-            List<BooleanFunction> F2 = new List<BooleanFunction>() { new BooleanFunction("00111110", vars) };
-            List<BooleanFunction> F3 = new List<BooleanFunction>() { new BooleanFunction("10111110", vars) };
-            List<bool[]> allInputs = BooleanAlgebraHelper.GetAllInputs(vars);
+            /* 
+             
+        1	int
+		1	int
+		1	int
+		1	int
+		1	int
+		1	int
+		1	int
+		1	int
+		1	int
+		1	int
+		1	int
+		1	int
+		1	int
+		2	int
+		1	int
+		2	int
+		14	int
+		1	int
+		14	int
+		1	int
+		1	int
+		2	int
+		1	int
+		2	int
+		1	int
+		2	int
+		1	int
+		2	int
+		14	int
+		1	int
+		14	int
+		1	int
+		1	int
+		2	int
+		1	int
+		2	int
+		1	int
+		2	int
+		1	int
+		1	int
+		1	int
+		1	int
+		1	int
+		1	int
+		1	int
+		1	int
+		1	int
+		1	int
+		1	int
+		1	int
+		1	int
+		1	int
+		1	int
+		1	int
+		3	int
+		224	int
+		1	int
+		2	int
+		1	int
+		2	int
+		1	int
+		2	int
+		1	int
+		1	int
+		1	int
+		1	int
+		1	int
+		1	int
+		1	int
+		1	int
+		1	int
+		1	int
+		1	int
+		1	int
+		1	int
+		1	int
+		1	int
+		1	int
+		1	int
+		2	int
+		1	int
+		2	int
+		1	int
+		16	int
+		1	int
+		1	int
+		1	int
+		1	int
+		1	int
+		1	int
+		1	int
+		1	int
+		1	int
+		1	int
+		1	int
+		5	int
+		1	int
+		1	int
+		1	int
+		1	int
+		14	int
+		1	int
+		14	int
+		1	int
+		1	int
+		1	int
+		1	int
+		1	int
+		1	int
+		1	int
+		1	int
+		1	int
+		1	int
+		1	int
+		1	int
+		1	int
+		1	int
+		1	int
+		1	int
+		1	int
+		3	int
+		224	int
+		1	int
+		1	int
+		1	int
+		1	int
+		1	int
+		1	int
+		1	int
+		1	int
+		1	int
+		1	int
+		1	int
+		1	int
+		1	int
+		1	int
+		1	int
+		1	int
+		1	int
+		1	int
+		1	int
+		1	int
+		1	int
+		1	int
+		1	int
+		1	int
+		1	int
+		1	int
+		1	int
+		5	int
+		1	int
+		1	int
+		1	int
+		1	int
+		14	int
+		1	int
+		1	int
+		2	int
+		1	int
+		2	int
+		14	int
+		1	int
+		8	int
+		1	int
+		14	int
+		1	int
+		14	int
+		1	int
+		1	int
+		2	int
+		1	int
+		2	int
+		8	int
+		1	int
+		14	int
+		1	int
+		3	int
+		24	int
+		8	int
+		1	int
+		7	int
+		128	int
+		1	int
+		2	int
+		1	int
+		2	int
+		1	int
+		2	int
+		1	int
+		2	int
+		1	int
+		2	int
+		1	int
+		2	int
+		1	int
+		2	int
+		1	int
+		2	int
+		4	int
+		16	int
+		7	int
+		128	int
+		7	int
+		128	int
+		2	int
+		24	int
+		4	int
+		16	int
+		3	int
+		224	int
 
-            List<FunctionsTestPair> basePairs = new List<FunctionsTestPair>();
-            basePairs.Add(new FunctionsTestPair() { FuncsA = F1, FuncsB = F2 });
-            basePairs.Add(new FunctionsTestPair() { FuncsA = F1, FuncsB = F3 });
-            basePairs.Add(new FunctionsTestPair() { FuncsA = F2, FuncsB = F3 });
 
-            List<TreeNode> resultNodes = new List<TreeNode>();
-
-            List<TreeNode> nodes = new List<TreeNode>();
-            List<TreeNode> completed = new List<TreeNode>();
-            foreach (bool[] input in allInputs)
-            {
-                TreeNode node = new TreeNode(basePairs, input);
-                TreeNode resNode = node.Process();
-                if (node.Completed)
-                {
-                    completed.Add(node);
-                }
-                else if (node.ResultPairs != null)
-                {
-                    nodes.Add(resNode);
-                }
-            }
-            while(nodes.Count > 0)
-            {
-                List<TreeNode> newNodes = new List<TreeNode>();
-                foreach(TreeNode node in nodes)
-                {
-                    foreach (bool[] input in allInputs)
-                    {
-                        TreeNode childNode = node.CreateChildNode(input);
-                        TreeNode resultTreeNode = childNode.Process();
-                        if (childNode.Completed)
-                        {
-                            completed.Add(childNode);
-                        }
-                        else if (resultTreeNode != null)
-                        {
-                            newNodes.Add(resultTreeNode);
-                        }
-                    }
-                }
-                nodes = newNodes;
-            }
-            var res = completed.Select(x => x.HistoryString).Distinct();
+             
+             */
         }
     }
 }

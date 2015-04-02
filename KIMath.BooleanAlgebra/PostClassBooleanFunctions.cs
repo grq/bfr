@@ -62,5 +62,14 @@ namespace KIMath.BooleanAlgebra
             }
             return false;
         }
+
+        #region Base Overrides
+
+        public override string ToString()
+        {
+            return this.PostPropertiesString;
+        }
+
+        #endregion
     }
 }

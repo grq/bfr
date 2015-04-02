@@ -136,5 +136,19 @@ namespace KIMath.ResearchConsole
                 Console.WriteLine();
             }
         }
+
+        public static List<int> GetNewHash(int variables)
+        {
+            List<int> resultHash = new List<int>();
+            List<PostClassBooleanFunctions> classes = ProcessorClassBooleanFunctions.GetPostClasses(variables).ToList();
+            List<List<PostClassBooleanFunctions>> combinations = BooleanAlgebraHelper.GetAllCombinations<PostClassBooleanFunctions>(classes, 2);
+            foreach (List<PostClassBooleanFunctions> combination in combinations)
+            {
+                OuterTestProcessor otp = new OuterTestProcessor(variables, combination);
+                resultHash.Add(otp.MinimalTestLength);
+                resultHash.Add(otp.MinimalTests.Count);
+            }
+            return resultHash;
+        }
     }
 }

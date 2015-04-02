@@ -53,8 +53,13 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="BooleanFunctionTest.cs" />
     <Compile Include="OmegaComplexityProcessorTest.cs" />
+    <Compile Include="InnerOuterTestProcessorTest.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\KIMath.BooleanAlgebra.TestTheory\KIMath.BooleanAlgebra.TestTheory.csproj">
+      <Project>{fcac1fe7-8b45-4b24-adc8-32d50882de40}</Project>
+      <Name>KIMath.BooleanAlgebra.TestTheory</Name>
+    </ProjectReference>
     <ProjectReference Include="..\KIMath.BooleanAlgebra\KIMath.BooleanAlgebra.csproj">
       <Project>{f215a23d-00aa-4671-9b38-0eb0071d2c3d}</Project>
       <Name>KIMath.BooleanAlgebra</Name>
