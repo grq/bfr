@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace KIMath.BooleanAlgebra.TestTheory
 {
     /// <summary>
-    /// Процессор для вычисления тупиковых и минимальных тестов
+    /// Процессор для вычисления тестов для распознавания функций внутри множества функций
     /// </summary>
     public class InnerTestProcessor : CommonProcessor
     {
@@ -34,11 +34,11 @@ namespace KIMath.BooleanAlgebra.TestTheory
             this.ConsoleWriteLine(string.Format("Вычисление для класса: {0}", this.PostClass.PostPropertiesString));
             List<bool[]> inputs = TestTheoryCommon.ExcludeInputs(this.PostClass.Functions, this.Variables);
             /* Завершенные тесты */
-            List<InnerTest> completed = new List<InnerTest>();
+            List<InnerTestTreeNode> completed = new List<InnerTestTreeNode>();
             /* Незавершенные тесте */
-            List<InnerTest> undone = new List<InnerTest>();
+            List<InnerTestTreeNode> undone = new List<InnerTestTreeNode>();
             /* Создаём новый тест */
-            InnerTest test = new InnerTest(this.Variables, this.PostClass.Functions, inputs);
+            InnerTestTreeNode test = new InnerTestTreeNode(this.Variables, this.PostClass.Functions, inputs);
             /* Первая итерация вычисления тестов */
             undone = test.Process();
             /* Переменная число итераций */
@@ -51,14 +51,14 @@ namespace KIMath.BooleanAlgebra.TestTheory
                 y++;
                 this.ConsoleWrite(y + " ");
                 /* Создаём новый массив тестов M */
-                List<InnerTest> newUndone = new List<InnerTest>();
+                List<InnerTestTreeNode> newUndone = new List<InnerTestTreeNode>();
                 /* Для каждого теста t */
-                foreach (InnerTest t in undone)
+                foreach (InnerTestTreeNode t in undone)
                 {
                     /* В массив M добавляем результат итерации теста t */
                     newUndone.AddRange(t.Process());
                     /* Если тест t завершен */
-                    if (t.Comleted)
+                    if (t.IsCompleted)
                     {
                         /* Добавляем его в массив завершенных */
                         completed.Add(t);

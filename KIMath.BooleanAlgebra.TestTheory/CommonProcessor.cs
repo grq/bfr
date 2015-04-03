@@ -16,12 +16,24 @@ namespace KIMath.BooleanAlgebra.TestTheory
         /// </summary>
         public int Variables { get; protected set; }
 
+        /// <summary>
+        /// Тупиковые тесты
+        /// </summary>
         protected List<BooleanFunctionTest> _deadlockTests;
 
+        /// <summary>
+        /// Минимальные тесты
+        /// </summary>
         protected List<BooleanFunctionTest> _minimalTests;
 
+        /// <summary>
+        /// Длина минимального теста
+        /// </summary>
         protected int? _minimalTestLength;
 
+        /// <summary>
+        /// Использование консоли при вычислении
+        /// </summary>
         protected bool _useConsole;
 
         /// <summary>
@@ -69,11 +81,14 @@ namespace KIMath.BooleanAlgebra.TestTheory
             }
         }
 
-        protected virtual void ProcessDeadlockTests()
-        {
-            throw new NotImplementedException();
-        }
+        /// <summary>
+        /// Вычисление всех тестов
+        /// </summary>
+        protected abstract void ProcessDeadlockTests();
 
+        /// <summary>
+        /// Вычисление минимальных тестов
+        /// </summary>
         protected void ProcessMinimalTests()
         {
             if (this._deadlockTests == null)

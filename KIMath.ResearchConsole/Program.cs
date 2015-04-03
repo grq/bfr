@@ -24,7 +24,7 @@ namespace KIMath.ResearchConsole
             List<List<PostClassBooleanFunctions>> combinations = BooleanAlgebraHelper.GetAllCombinations<PostClassBooleanFunctions>(classes, 2);
             foreach (List<PostClassBooleanFunctions> combination in combinations)
             {
-                OuterTestProcessor otp = new OuterTestProcessor(variables, combination);
+                OuterTestProcessor otp = new OuterTestProcessor(variables, combination, true);
                 sb.AppendLine(string.Format("{0} {1} {2} {3}", combination[0].PostPropertiesString, combination[1].PostPropertiesString,
                          otp.MinimalTestLength, otp.MinimalTests.Count));
                 using (System.IO.StreamWriter file = new System.IO.StreamWriter(resultFileName))
@@ -70,216 +70,112 @@ namespace KIMath.ResearchConsole
 
             /* 
              
-        1	int
-		1	int
-		1	int
-		1	int
-		1	int
-		1	int
-		1	int
-		1	int
-		1	int
-		1	int
-		1	int
-		1	int
-		1	int
-		2	int
-		1	int
-		2	int
-		14	int
-		1	int
-		14	int
-		1	int
-		1	int
-		2	int
-		1	int
-		2	int
-		1	int
-		2	int
-		1	int
-		2	int
-		14	int
-		1	int
-		14	int
-		1	int
-		1	int
-		2	int
-		1	int
-		2	int
-		1	int
-		2	int
-		1	int
-		1	int
-		1	int
-		1	int
-		1	int
-		1	int
-		1	int
-		1	int
-		1	int
-		1	int
-		1	int
-		1	int
-		1	int
-		1	int
-		1	int
-		1	int
-		3	int
-		224	int
-		1	int
-		2	int
-		1	int
-		2	int
-		1	int
-		2	int
-		1	int
-		1	int
-		1	int
-		1	int
-		1	int
-		1	int
-		1	int
-		1	int
-		1	int
-		1	int
-		1	int
-		1	int
-		1	int
-		1	int
-		1	int
-		1	int
-		1	int
-		2	int
-		1	int
-		2	int
-		1	int
-		16	int
-		1	int
-		1	int
-		1	int
-		1	int
-		1	int
-		1	int
-		1	int
-		1	int
-		1	int
-		1	int
-		1	int
-		5	int
-		1	int
-		1	int
-		1	int
-		1	int
-		14	int
-		1	int
-		14	int
-		1	int
-		1	int
-		1	int
-		1	int
-		1	int
-		1	int
-		1	int
-		1	int
-		1	int
-		1	int
-		1	int
-		1	int
-		1	int
-		1	int
-		1	int
-		1	int
-		1	int
-		3	int
-		224	int
-		1	int
-		1	int
-		1	int
-		1	int
-		1	int
-		1	int
-		1	int
-		1	int
-		1	int
-		1	int
-		1	int
-		1	int
-		1	int
-		1	int
-		1	int
-		1	int
-		1	int
-		1	int
-		1	int
-		1	int
-		1	int
-		1	int
-		1	int
-		1	int
-		1	int
-		1	int
-		1	int
-		5	int
-		1	int
-		1	int
-		1	int
-		1	int
-		14	int
-		1	int
-		1	int
-		2	int
-		1	int
-		2	int
-		14	int
-		1	int
-		8	int
-		1	int
-		14	int
-		1	int
-		14	int
-		1	int
-		1	int
-		2	int
-		1	int
-		2	int
-		8	int
-		1	int
-		14	int
-		1	int
-		3	int
-		24	int
-		8	int
-		1	int
-		7	int
-		128	int
-		1	int
-		2	int
-		1	int
-		2	int
-		1	int
-		2	int
-		1	int
-		2	int
-		1	int
-		2	int
-		1	int
-		2	int
-		1	int
-		2	int
-		1	int
-		2	int
-		4	int
-		16	int
-		7	int
-		128	int
-		7	int
-		128	int
-		2	int
-		24	int
-		4	int
-		16	int
-		3	int
-		224	int
+1 1
+1 1
+1 1
+1 1
+1 1
+1 1
+1 2
+1 2
+14 1
+14 1
+1 2
+1 2
+1 2
+1 2
+14 1
+14 1
+1 2
+1 2
+1 2
+1 1
+1 1
+1 1
+1 1
+1 1
+1 1
+1 1
+1 1
+3 224
+1 2
+1 2
+1 2
+1 1
+1 1
+1 1
+1 1
+1 1
+1 1
+1 1
+1 1
+1 2
+1 2
+1 16
+1 1
+1 1
+1 1
+1 1
+1 1
+1 5
+1 1
+1 1
+14 1
+14 1
+1 1
+1 1
+1 1
+1 1
+1 1
+1 1
+1 1
+1 1
+3 224
+1 1
+1 1
+1 1
+1 1
+1 1
+1 1
+1 1
+1 1
+1 1
+1 1
+1 1
+1 1
+1 1
+1 5
+1 1
+1 1
+14 1
+1 2
+1 2
+14 1
+8 1
+14 1
+14 1
+1 2
+1 2
+8 1
+14 1
+3 24
+8 1
+7 128
+1 2
+1 2
+1 2
+1 2
+1 2
+1 2
+1 2
+1 2
+4 16
+7 128
+7 128
+2 24
+4 16
+3 224
+
 
 
              

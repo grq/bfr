@@ -21,17 +21,17 @@ namespace KIMath.BooleanAlgebra.TestTheory
         /// </summary>
         public int Length { get; private set; }
 
-        private string _stringFormat;
+        private string _stringValue;
 
         /// <summary>
         /// Конструктор
         /// </summary>
-        /// <param name="inputs">Наборы переменных</param>
+        /// <param name="inputs">Наборы значений переменных</param>
         public BooleanFunctionTest(List<bool[]> inputs)
         {
             this.Inputs = inputs;
             this.Length = inputs.Count;
-            this._stringFormat = string.Format("({0})", string.Join(string.Empty, string.Join("; ", 
+            this._stringValue = string.Format("({0})", string.Join(string.Empty, string.Join("; ", 
                 this.Inputs.Select(x => "{" + BooleanAlgebraHelper.BinaryToString(x, ", ") + "}"))));
         }
 
@@ -39,7 +39,7 @@ namespace KIMath.BooleanAlgebra.TestTheory
 
         public override string ToString()
         {
-            return this._stringFormat;
+            return this._stringValue;
         }
 
         public override bool Equals(object obj)

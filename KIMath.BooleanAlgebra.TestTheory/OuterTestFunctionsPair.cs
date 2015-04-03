@@ -6,19 +6,39 @@ using System.Threading.Tasks;
 
 namespace KIMath.BooleanAlgebra.TestTheory
 {
+    /// <summary>
+    /// Пара множеств функций для вычислений теста по распознаванию (отделению) функций в этих множествах
+    /// </summary>
     internal class OuterTestFunctionsPair
     {
+        /// <summary>
+        /// Множество функций алгебры логики
+        /// </summary>
         public List<BooleanFunction> FuncsA { get; set; }
 
+        /// <summary>
+        /// Множество функций алгебры логики
+        /// </summary>
         public List<BooleanFunction> FuncsB { get; set; }
 
-        public bool IsDeadlock { get; set; }
+        /// <summary>
+        /// Тест завершён
+        /// </summary>
+        public bool IsCompleted { get; set; }
 
+        /// <summary>
+        /// Конструктор
+        /// </summary>
         public OuterTestFunctionsPair()
         {
             this.InitArrays();
         }
 
+        /// <summary>
+        /// Конструктор
+        /// </summary>
+        /// <param name="listA">Множество функций алгебры логики</param>
+        /// <param name="listB">Множество функций алгебры логики</param>
         public OuterTestFunctionsPair(IEnumerable<BooleanFunction> listA, IEnumerable<BooleanFunction> listB)
         {
             this.InitArrays();
@@ -26,18 +46,31 @@ namespace KIMath.BooleanAlgebra.TestTheory
             this.FuncsB = listB.ToList();
         }
 
+        /// <summary>
+        /// Инициализация массивов
+        /// </summary>
         private void InitArrays()
         {
             this.FuncsA = new List<BooleanFunction>();
             this.FuncsB = new List<BooleanFunction>();
         }
 
+        /// <summary>
+        /// Определить содержит ли каждое из множеств функций хотя бы одну функцию
+        /// В процессе выполнения функции вычисляется завершённость (IsCompleted) теста
+        /// </summary>
+        /// <returns>Пара множеств валидна</returns>
         public bool IsValid()
         {
-            this.IsDeadlock = this.FuncsA.Count == 0 || this.FuncsB.Count == 0;
+            this.IsCompleted = this.FuncsA.Count == 0 || this.FuncsB.Count == 0;
             return this.FuncsA.Count > 0 || this.FuncsB.Count > 0;
         }
 
+        /// <summary>
+        /// Разделить множества функций на наборе
+        /// </summary>
+        /// <param name="input">Набор значений переменных</param>
+        /// <returns>Множество результирующих пар множеств функций</returns>
         public List<OuterTestFunctionsPair> Separate(bool[] input)
         {
             List<OuterTestFunctionsPair> result = new List<OuterTestFunctionsPair>();

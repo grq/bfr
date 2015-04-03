@@ -6,26 +6,48 @@ using System.Threading.Tasks;
 
 namespace KIMath.BooleanAlgebra.TestTheory
 {
+    /// <summary>
+    /// Процессор для вычисления тестов для распознавания (отделения) функций между множествами функций
+    /// </summary>
     public class OuterTestProcessor: CommonProcessor
     {
+        /// <summary>
+        /// Число переменных
+        /// </summary>
         public int Variables { get; private set; }
 
-        public bool Result { get; private set; }
-
+        /// <summary>
+        /// Классы Поста, между которыми происходит распознавание (отделение) функций
+        /// </summary>
         public List<PostClassBooleanFunctions> PostClasses { get; private set; }
 
+        /// <summary>
+        /// Конструктор
+        /// </summary>
+        /// <param name="variables">Число переменных</param>
+        /// <param name="list">Класс функций алгебры логики</param>
         public OuterTestProcessor(int variables, params PostClassBooleanFunctions[] list)
         {
             this.Variables = variables;
             this.PostClasses = list.ToList();
         }
 
-        public OuterTestProcessor(int variables, IEnumerable<PostClassBooleanFunctions> postClasses)
+        /// <summary>
+        /// Конструктор
+        /// </summary>
+        /// <param name="variables">Число переменных</param>
+        /// <param name="postClasses">Классы функций алгебры логики</param>
+        ///<param name="useConsole">Использовать консоль для вычисления</param>
+        public OuterTestProcessor(int variables, IEnumerable<PostClassBooleanFunctions> postClasses, bool useConsole = false)
         {
             this.Variables = variables;
             this.PostClasses = postClasses.ToList();
+            this._useConsole = useConsole;
         }
 
+        /// <summary>
+        /// Вычислить тупиковые тесты
+        /// </summary>
         protected override void ProcessDeadlockTests()
         {
             this._deadlockTests = new List<BooleanFunctionTest>();
@@ -45,7 +67,7 @@ namespace KIMath.BooleanAlgebra.TestTheory
             {
                 OuterTestTreeNode node = new OuterTestTreeNode(basePairs, input);
                 OuterTestTreeNode resNode = node.Process();
-                if (node.IsDeadlock)
+                if (node.IsCompleted)
                 {
                     this._deadlockTests.Add(node.GetTest());
                 }
@@ -56,7 +78,7 @@ namespace KIMath.BooleanAlgebra.TestTheory
             }
             while (currentNodes.Count > 0)
             {
-                Console.Write("{0} ({1}) ", iteration, currentNodes.Count);
+                this.ConsoleWrite(string.Format("{0} ({1}) ", iteration, currentNodes.Count));
                 List<OuterTestTreeNode> newNodes = new List<OuterTestTreeNode>();
                 for (int i = 0; i < currentNodes.Count; i++)
                 {
@@ -64,7 +86,7 @@ namespace KIMath.BooleanAlgebra.TestTheory
                     {
                         OuterTestTreeNode childNode = currentNodes[i].CreateChildNode(input);
                         OuterTestTreeNode resultTreeNode = childNode.Process();
-                        if (childNode.IsDeadlock)
+                        if (childNode.IsCompleted)
                         {
                             this._deadlockTests.Add(childNode.GetTest());
                         }

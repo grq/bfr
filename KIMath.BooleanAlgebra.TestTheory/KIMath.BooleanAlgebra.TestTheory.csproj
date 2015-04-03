@@ -41,9 +41,8 @@
   <ItemGroup>
     <Compile Include="BooleanFunctionTest.cs" />
     <Compile Include="CommonProcessor.cs" />
-    <Compile Include="InnerTest.cs" />
+    <Compile Include="InnerTestTreeNode.cs" />
     <Compile Include="OuterTestFunctionsPair.cs" />
-    <Compile Include="TestCommon.cs" />
     <Compile Include="InnerTestProcessor.cs" />
     <Compile Include="OuterTestProcessor.cs" />
     <Compile Include="OuterTestTreeNode.cs" />
