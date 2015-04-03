@@ -124,31 +124,49 @@ namespace KIMath.ResearchConsole
             }
         }
 
+        /// <summary>
+        /// Вычисление минимальных тестов для распознавания (отделение) функций между классами.
+        /// Эксперимент проводится для всех классов функций алгебры логики по сочетаниям свойств Поста для функций от заданного числа переменных.
+        /// Для проведения эксперимента задаётся число классов в одном сочетании
+        /// </summary>
+        /// <param name="variables">Число переменных</param>
+        /// <param name="capacity">Число классов в одном сочетании</param>
         public static void ProcessMinimalOuterTests(int variables, int capacity)
         {
+            string dateString = DateTime.Now.ToString("yyyy-MM-dd--hh-mm-ss");
+            string resultFileName = string.Format("ProcessMinimalOuterTests_{0}.txt", dateString);
+            string title1 = string.Format(
+@"Вычисление минимальных тестов для распознавания (отделение) функций между классами.
+Эксперимент проводится для всех классов функций алгебры логики по сочетаниям свойств Поста для функций от {0} переменных.
+Эксперимент проводится для всех возможных сочетаний по {1} класса (-ов)",
+                variables, capacity);
+            StringBuilder resultString = new StringBuilder();
+            Console.WriteLine(title1);
+            Console.WriteLine();
+            resultString.AppendLine(title1);
+            resultString.AppendLine();
+            using (System.IO.StreamWriter file = new System.IO.StreamWriter(resultFileName))
+            {
+                file.Write(resultString.ToString());
+            }
             List<PostClassBooleanFunctions> classes = ProcessorClassBooleanFunctions.GetPostClasses(variables).ToList();
             List<List<PostClassBooleanFunctions>> combinations = BooleanAlgebraHelper.GetAllCombinations<PostClassBooleanFunctions>(classes, capacity);
             foreach(List<PostClassBooleanFunctions> combination in combinations)
             {
-                OuterTestProcessor otp = new OuterTestProcessor(variables, combination);
-                Console.WriteLine(string.Join(" ", combination.Select(x => x.PostPropertiesString)));
-                Console.WriteLine("Длина минимального теста: {0}. Число минимальных тестов: {1}.", otp.MinimalTestLength, otp.MinimalTests.Count);
+                OuterTestProcessor otp = new OuterTestProcessor(variables, combination, true);
+                string classesString = string.Format("Классы: {0}", string.Join(" ", combination.Select(x => x.PostPropertiesString)));
+                Console.WriteLine(classesString);
+                resultString.AppendLine(classesString);
+                string result = string.Format("Длина минимального теста: {0}. Число минимальных тестов: {1}.", otp.MinimalTestLength, otp.MinimalTests.Count);
+                Console.WriteLine(result);
+                resultString.AppendLine(result);
                 Console.WriteLine();
+                resultString.AppendLine();
+                using (System.IO.StreamWriter file = new System.IO.StreamWriter(resultFileName))
+                {
+                    file.Write(resultString.ToString());
+                }
             }
-        }
-
-        public static List<int> GetNewHash(int variables)
-        {
-            List<int> resultHash = new List<int>();
-            List<PostClassBooleanFunctions> classes = ProcessorClassBooleanFunctions.GetPostClasses(variables).ToList();
-            List<List<PostClassBooleanFunctions>> combinations = BooleanAlgebraHelper.GetAllCombinations<PostClassBooleanFunctions>(classes, 2);
-            foreach (List<PostClassBooleanFunctions> combination in combinations)
-            {
-                OuterTestProcessor otp = new OuterTestProcessor(variables, combination);
-                resultHash.Add(otp.MinimalTestLength);
-                resultHash.Add(otp.MinimalTests.Count);
-            }
-            return resultHash;
         }
     }
 }

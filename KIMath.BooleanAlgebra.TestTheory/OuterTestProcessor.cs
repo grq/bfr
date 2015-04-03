@@ -99,6 +99,7 @@ namespace KIMath.BooleanAlgebra.TestTheory
                 currentNodes = newNodes;
                 iteration++;
             }
+            this.ConsoleWriteLine();
         }
     }
 }
