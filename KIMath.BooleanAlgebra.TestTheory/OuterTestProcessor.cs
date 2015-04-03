@@ -19,14 +19,14 @@ namespace KIMath.BooleanAlgebra.TestTheory
         /// <summary>
         /// Классы Поста, между которыми происходит распознавание (отделение) функций
         /// </summary>
-        public List<PostClassBooleanFunctions> PostClasses { get; private set; }
+        public List<ClassBooleanFunctions> PostClasses { get; private set; }
 
         /// <summary>
         /// Конструктор
         /// </summary>
         /// <param name="variables">Число переменных</param>
         /// <param name="list">Класс функций алгебры логики</param>
-        public OuterTestProcessor(int variables, params PostClassBooleanFunctions[] list)
+        public OuterTestProcessor(int variables, params ClassBooleanFunctions[] list)
         {
             this.Variables = variables;
             this.PostClasses = list.ToList();
@@ -38,7 +38,7 @@ namespace KIMath.BooleanAlgebra.TestTheory
         /// <param name="variables">Число переменных</param>
         /// <param name="postClasses">Классы функций алгебры логики</param>
         ///<param name="useConsole">Использовать консоль для вычисления</param>
-        public OuterTestProcessor(int variables, IEnumerable<PostClassBooleanFunctions> postClasses, bool useConsole = false)
+        public OuterTestProcessor(int variables, IEnumerable<ClassBooleanFunctions> postClasses, bool useConsole = false)
         {
             this.Variables = variables;
             this.PostClasses = postClasses.ToList();

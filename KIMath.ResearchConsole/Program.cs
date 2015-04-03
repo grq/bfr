@@ -1,5 +1,4 @@
 ﻿using KIMath.BooleanAlgebra;
-using KIMath.BooleanAlgebra.TestTheory; //todo remove
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +11,8 @@ namespace KIMath.ResearchConsole
     {
         static void Main(string[] args)
         {
-            MinimalTestsResearch.ProcessMinimalOuterTests(3, 2);
+            MinimalTestsResearch.ProcessMinimalOuterTests(3, 3);
+            Console.ReadKey();
         }
     }
 }

@@ -153,13 +153,18 @@ namespace KIMath.ResearchConsole
             List<List<PostClassBooleanFunctions>> combinations = BooleanAlgebraHelper.GetAllCombinations<PostClassBooleanFunctions>(classes, capacity);
             foreach(List<PostClassBooleanFunctions> combination in combinations)
             {
-                OuterTestProcessor otp = new OuterTestProcessor(variables, combination, true);
+                OuterTestProcessor processor = new OuterTestProcessor(variables, combination, true);
                 string classesString = string.Format("Классы: {0}", string.Join(" ", combination.Select(x => x.PostPropertiesString)));
                 Console.WriteLine(classesString);
                 resultString.AppendLine(classesString);
-                string result = string.Format("Длина минимального теста: {0}. Число минимальных тестов: {1}.", otp.MinimalTestLength, otp.MinimalTests.Count);
+                string result = string.Format("Длина минимального теста: {0}. Число минимальных тестов: {1}.\r\nМинимальные тесты:", processor.MinimalTestLength, processor.MinimalTests.Count);
                 Console.WriteLine(result);
                 resultString.AppendLine(result);
+                foreach(BooleanFunctionTest test in processor.MinimalTests)
+                {
+                    Console.WriteLine(test);
+                    resultString.AppendLine(test.ToString());
+                }
                 Console.WriteLine();
                 resultString.AppendLine();
                 using (System.IO.StreamWriter file = new System.IO.StreamWriter(resultFileName))

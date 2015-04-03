@@ -55,5 +55,24 @@ namespace KIMath.BooleanAlgebraTests
             bool resultForFourVariables = BooleanAlgebraHelper.CollectionAreEquals<int>(newHashForFourVariables, oldHashForFourVariables);
             Assert.AreEqual(true, resultForThreeVariables);
         }
+
+        [TestMethod]
+        public void TestInnerEqualToOuter()
+        {
+            int variables = 3;
+            PostClassBooleanFunctions[] postClasses = ProcessorClassBooleanFunctions.GetPostClasses(variables).ToArray();
+            foreach (PostClassBooleanFunctions postClass in postClasses)
+            {
+                InnerTestProcessor innerProcessor = new InnerTestProcessor(postClass, variables);
+                List<ClassBooleanFunctions> functionsAsManyClasses = new List<ClassBooleanFunctions>();
+                foreach(BooleanFunction function in postClass.Functions)
+                {
+                    functionsAsManyClasses.Add(new ClassBooleanFunctions(function));
+                }
+                OuterTestProcessor outerProcessor = new OuterTestProcessor(variables, functionsAsManyClasses);
+                Assert.AreEqual(innerProcessor.MinimalTestLength, outerProcessor.MinimalTestLength);
+                Assert.AreEqual(innerProcessor.MinimalTests.Count, outerProcessor.MinimalTests.Count);
+            }
+        }
     }
 }

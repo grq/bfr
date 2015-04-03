@@ -22,6 +22,15 @@ namespace KIMath.BooleanAlgebra
             this.Functions = new ObservableCollection<BooleanFunction>();
         }
 
+        public ClassBooleanFunctions(params BooleanFunction[] list)
+        {
+            this.Functions = new ObservableCollection<BooleanFunction>();
+            foreach(BooleanFunction function in list)
+            {
+                this.Functions.Add(function);
+            }
+        }
+
         /// <summary>
         /// Добавить функцию(-ии) в класс
         /// </summary>
