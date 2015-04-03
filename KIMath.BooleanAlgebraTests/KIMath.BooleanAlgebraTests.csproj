@@ -54,6 +54,7 @@
     <Compile Include="BooleanFunctionTest.cs" />
     <Compile Include="OmegaComplexityProcessorTest.cs" />
     <Compile Include="InnerOuterTestProcessorTest.cs" />
+    <Compile Include="HelperTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\KIMath.BooleanAlgebra.TestTheory\KIMath.BooleanAlgebra.TestTheory.csproj">

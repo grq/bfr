@@ -173,5 +173,34 @@ namespace KIMath.ResearchConsole
                 }
             }
         }
+
+        public static void Experiment(int variables, int capacity)
+        {
+            int iteration = 1;
+            List<PostClassBooleanFunctions> classes = ProcessorClassBooleanFunctions.GetPostClasses(variables).ToList();
+            List<List<PostClassBooleanFunctions>> combinations = BooleanAlgebraHelper.GetAllCombinations<PostClassBooleanFunctions>(classes, capacity);
+            foreach (List<PostClassBooleanFunctions> combination in combinations)
+            {
+                OuterTestProcessor totalProcessor = new OuterTestProcessor(variables, combination);
+                List<BooleanFunctionTest> totalTests = totalProcessor.MinimalTests;
+                List<List<PostClassBooleanFunctions>> subCombinations = BooleanAlgebraHelper.GetAllCombinations<PostClassBooleanFunctions>(combination, 2);
+                List<List<BooleanFunctionTest>> subTests = new List<List<BooleanFunctionTest>>();
+                foreach(List<PostClassBooleanFunctions> subCombination in subCombinations)
+                {
+                    OuterTestProcessor subProcessor = new OuterTestProcessor(variables, subCombination);
+                    subTests.Add(subProcessor.MinimalTests);
+                }
+                List<BooleanFunctionTest> subTestsIntersection = BooleanAlgebraHelper.GetIntersection<BooleanFunctionTest>(subTests);
+                bool isIntersection = BooleanAlgebraHelper.CollectionsAreEqualNotOrdered(totalTests, subTestsIntersection);
+                Console.WriteLine("{0}) Для классов {1}", iteration, string.Join(" - ", combination.Select(x => x.PostPropertiesString)));
+                if (isIntersection)
+                {
+                    var a = isIntersection;
+                }
+                Console.WriteLine("Является пересечением: {0}", isIntersection ? "ДААААААААААААААААААААААААААААААААА" : "Нет");
+                Console.WriteLine();
+                iteration++;
+            }
+        }
     }
 }

@@ -12,7 +12,7 @@ namespace KIMath.BooleanAlgebra
 
         static public bool Implication(params bool[] list)
         {
-            if(list.Length < 2)
+            if (list.Length < 2)
             {
                 throw new ArgumentOutOfRangeException("Params", "At least two parameters should be provided.");
             }
@@ -125,7 +125,7 @@ namespace KIMath.BooleanAlgebra
 
         static public string BinaryToString(IEnumerable<bool> input)
         {
-            return BinaryToString(input, string.Empty);;
+            return BinaryToString(input, string.Empty); ;
         }
 
         static public IEnumerable<bool> StringToBoolArray(string value)
@@ -267,7 +267,7 @@ namespace KIMath.BooleanAlgebra
                 for (int j = 0; j < i - 1; j++)
                 {
                     List<bool> prephix = inputs[j].ToList().GetRange(1, n - 1);
-                    if (CollectionAreEquals(prephix, comparer))
+                    if (CollectionsAreEqualOrdered(prephix, comparer))
                     {
                         prephix.Add(low);
                         inputs.Add(prephix.ToArray());
@@ -285,23 +285,54 @@ namespace KIMath.BooleanAlgebra
         }
 
         /// <summary>
-        /// Сравнение двух коллекций объектов
+        /// Сравнение двух коллекций объектов, коллекции равны если элементы одинаково упорядочены
         /// </summary>
         /// <typeparam name="T">Любой тип</typeparam>
         /// <param name="valueA">Коллекция объектов</param>
         /// <param name="valueB">Коллекция объектов</param>
         /// <returns>Результат сравнения</returns>
-        static public bool CollectionAreEquals<T>(IEnumerable<T> valueA, IEnumerable<T> valueB)
+        static public bool CollectionsAreEqualOrdered<T>(IEnumerable<T> valueA, IEnumerable<T> valueB)
         {
             var a = valueA.ToArray();
             var b = valueB.ToArray();
-            if (a.Length != a.Length)
+            if (a.Length != b.Length)
             {
                 return false;
             }
             for (int i = 0; i < a.Length; i++)
             {
                 if (!a[i].Equals(b[i]))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// Сравнение двух коллекций объектов, коллекции равны если элементы не одинаково упорядочены
+        /// </summary>
+        /// <typeparam name="T">Любой тип</typeparam>
+        /// <param name="valueA">Коллекция объектов</param>
+        /// <param name="valueB">Коллекция объектов</param>
+        /// <returns>Результат сравнения</returns>
+        static public bool CollectionsAreEqualNotOrdered<T>(IEnumerable<T> valueA, IEnumerable<T> valueB)
+        {
+            var a = valueA.ToArray();
+            var b = valueB.ToArray();
+            if (a.Length != b.Length)
+            {
+                return false;
+            }
+            List<T> bResult = b.ToList();
+            for (int i = 0; i < a.Length; i++)
+            {
+                var bEl = bResult.FirstOrDefault(x => x.Equals(a[i]));
+                if (bEl != null)
+                {
+                    bResult.Remove(bEl);
+                }
+                else
                 {
                     return false;
                 }
@@ -331,7 +362,31 @@ namespace KIMath.BooleanAlgebra
             return result;
         }
 
+        static public List<T> GetIntersection<T>(IEnumerable<IEnumerable<T>> sets)
+        {
+            List<T> result = new List<T>();
+            foreach (IEnumerable<T> set in sets)
+            {
+                List<IEnumerable<T>> otherSets = sets.Except(new List<IEnumerable<T>>() { set }).ToList();
+                foreach (T element in set)
+                {
+                    if (!result.Contains(element))
+                    {
+                        bool add = true;
+                        otherSets.ForEach(x => add = add && x.Contains(element));
+                        if (add)
+                        {
+                            result.Add(element);
+                        }
+                    }
+                }
+            }
+            return result;
+        }
+
         #endregion
+
+        #region Private Methods
 
         private static void CombinationsRecursion<T>(int min, int max, int rec, int capacity, List<T> originals, ref List<List<T>> result, int[] arr = null)
         {
@@ -339,19 +394,24 @@ namespace KIMath.BooleanAlgebra
             {
                 arr = new int[originals.Count];
             }
-            for(int i=min; i < max; i++){
+            for (int i = min; i < max; i++)
+            {
                 arr[rec] = i;
-                if(rec == capacity -1){
+                if (rec == capacity - 1)
+                {
                     List<T> res = new List<T>();
-                    for(int m = 0; m < capacity; m++){
+                    for (int m = 0; m < capacity; m++)
+                    {
                         res.Add(originals[arr[m]]);
                     }
                     result.Add(res);
                     continue;
                 }
-                if(i==max) break;
+                if (i == max) break;
                 CombinationsRecursion(i + 1, max + 1, rec + 1, capacity, originals, ref result, arr);
             }
         }
+
+        #endregion
     }
 }

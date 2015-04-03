@@ -432,7 +432,7 @@ namespace KIMath.BooleanAlgebra
                             if (!ad.Contains(bd[0]))
                             {
                                 var res = ad.ToList().Concat(bd).OrderBy(p => p).ToArray();
-                                if (!combinations[curLength].Select(p => BooleanAlgebraHelper.CollectionAreEquals(p, res)).Contains(true))
+                                if (!combinations[curLength].Select(p => BooleanAlgebraHelper.CollectionsAreEqualOrdered(p, res)).Contains(true))
                                 {
                                     combinations[curLength].Add(res);
                                 }
@@ -773,7 +773,7 @@ namespace KIMath.BooleanAlgebra
 
         public override bool Equals(object obj)
         {
-            return BooleanAlgebraHelper.CollectionAreEquals(this.Value, ((BooleanFunction)obj).Value);
+            return BooleanAlgebraHelper.CollectionsAreEqualOrdered(this.Value, ((BooleanFunction)obj).Value);
         }
 
         public override int GetHashCode()

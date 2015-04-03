@@ -35,7 +35,7 @@ namespace KIMath.BooleanAlgebraTests
                 1, 2, 2, 12, 3, 8, 3, 8, 1, 6, 3, 8, 2, 12 };
             List<int> newHashForThreeVariables = this.GetOuterTestsHash(3, 2);
 
-            bool resultForThreeVariables = BooleanAlgebraHelper.CollectionAreEquals<int>(newHashForThreeVariables, oldHashForThreeVariables);
+            bool resultForThreeVariables = BooleanAlgebraHelper.CollectionsAreEqualOrdered<int>(newHashForThreeVariables, oldHashForThreeVariables);
             Assert.AreEqual(true, resultForThreeVariables);
 
             int[] oldHashForFourVariables = new int[] { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 2, 14, 1, 14, 1, 1, 2, 1, 2, 1, 2, 1, 2, 14, 
@@ -52,7 +52,7 @@ namespace KIMath.BooleanAlgebraTests
                 1, 1, 2, 1, 2, 14, 1, 8, 1, 14, 1, 14, 1, 1, 2, 1, 2, 8, 1, 14, 1, 3, 24, 8, 1, 7, 128, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 
                 1, 2, 4, 16, 7, 128, 7, 128, 2, 24, 4, 16, 3, 224 };
 
-            bool resultForFourVariables = BooleanAlgebraHelper.CollectionAreEquals<int>(newHashForFourVariables, oldHashForFourVariables);
+            bool resultForFourVariables = BooleanAlgebraHelper.CollectionsAreEqualOrdered<int>(newHashForFourVariables, oldHashForFourVariables);
             Assert.AreEqual(true, resultForThreeVariables);
         }
 
