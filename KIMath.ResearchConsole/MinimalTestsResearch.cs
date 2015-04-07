@@ -135,15 +135,15 @@ namespace KIMath.ResearchConsole
         {
             string dateString = DateTime.Now.ToString("yyyy-MM-dd--hh-mm-ss");
             string resultFileName = string.Format("ProcessMinimalOuterTests_{0}.txt", dateString);
-            string title1 = string.Format(
+            string title = string.Format(
 @"Вычисление минимальных тестов для распознавания (отделение) функций между классами.
 Эксперимент проводится для всех классов функций алгебры логики по сочетаниям свойств Поста для функций от {0} переменных.
 Эксперимент проводится для всех возможных сочетаний по {1} класса (-ов)",
                 variables, capacity);
             StringBuilder resultString = new StringBuilder();
-            Console.WriteLine(title1);
+            Console.WriteLine(title);
             Console.WriteLine();
-            resultString.AppendLine(title1);
+            resultString.AppendLine(title);
             resultString.AppendLine();
             using (System.IO.StreamWriter file = new System.IO.StreamWriter(resultFileName))
             {
@@ -174,8 +174,28 @@ namespace KIMath.ResearchConsole
             }
         }
 
-        public static void Experiment(int variables, int capacity)
+        /// <summary>
+        /// Вычисляются все возможные сочетания классов Поста от N переменных. Число классов в каждом сочетании - CAPACITY.
+        /// Для каждого сочетания вычисляются минимальные тесты.
+        /// Внутри каждого сочетания для каждой пары классов вычисляются минимальные тесты, и получается объединение множеств тестов.
+        /// Объединение тестов среди пар сравнивается с минимальными тестами между CAPACITY классов.
+        /// </summary>
+        /// <param name="variables">Число переменных</param>
+        /// <param name="capacity">Число классов в одном сочетании</param>
+        public static void CompareMinimalOuterTestsBetweenNandCapacity(int variables, int capacity)
         {
+            string dateString = DateTime.Now.ToString("yyyy-MM-dd--hh-mm-ss");
+            string resultFileName = string.Format("CompareMinimalOuterTestsBetweenNandCapacity_{0}.txt", dateString);
+            string title = string.Format(
+@"Вычисляются все возможные сочетания классов Поста от {0} переменных. Число классов в каждом сочетании - {1}.
+Для каждого сочетания вычисляются минимальные тесты.
+Внутри каждого сочетания для каждой пары классов вычисляются минимальные тесты, и получается объединение множеств тестов.
+Объединение тестов среди пар сравнивается с минимальными тестами между {1} классов.", variables, capacity);
+            StringBuilder resultString = new StringBuilder();
+            Console.WriteLine(title);
+            Console.WriteLine();
+            resultString.AppendLine(title);
+            resultString.AppendLine();
             int iteration = 1;
             List<PostClassBooleanFunctions> classes = ProcessorClassBooleanFunctions.GetPostClasses(variables).ToList();
             List<List<PostClassBooleanFunctions>> combinations = BooleanAlgebraHelper.GetAllCombinations<PostClassBooleanFunctions>(classes, capacity);
@@ -190,17 +210,195 @@ namespace KIMath.ResearchConsole
                     OuterTestProcessor subProcessor = new OuterTestProcessor(variables, subCombination);
                     subTests.Add(subProcessor.MinimalTests);
                 }
-                List<BooleanFunctionTest> subTestsIntersection = BooleanAlgebraHelper.GetIntersection<BooleanFunctionTest>(subTests);
+                List<BooleanFunctionTest> subTestsIntersection = SetTheoryHelper.GetIntersection<BooleanFunctionTest>(subTests).ToList();
                 bool isIntersection = BooleanAlgebraHelper.CollectionsAreEqualNotOrdered(totalTests, subTestsIntersection);
-                Console.WriteLine("{0}) Для классов {1}", iteration, string.Join(" - ", combination.Select(x => x.PostPropertiesString)));
+                bool isOriginalIncludesIntersection = SetTheoryHelper.IsInclusion(totalTests, subTestsIntersection);
+                bool isIntersectionIncludesOriginal = SetTheoryHelper.IsInclusion(subTestsIntersection, totalTests);
+                string resultTitle = string.Format("{0}) Для классов {1}", iteration, string.Join(" - ", combination.Select(x => x.PostPropertiesString)));
+                resultString.AppendLine(resultTitle);
+                Console.WriteLine(resultTitle);
+                resultString.AppendLine();
                 if (isIntersection)
                 {
                     var a = isIntersection;
                 }
-                Console.WriteLine("Является пересечением: {0}", isIntersection ? "ДААААААААААААААААААААААААААААААААА" : "Нет");
+                string result1 = string.Format("Является пересечением: {0}", isIntersection ? "ДААААААААААААААААААААААААААААААААА" : "Нет");
+                string result2 = string.Format("Пересечение входит в множество оригинальных тестов: {0}", isOriginalIncludesIntersection ? "ДААААААААААААААААААААААААААААААААА" : "Нет");
+                string result3 = string.Format("Множество оригинальных тестов входит в пересечение: {0}", isIntersectionIncludesOriginal ? "ДААААААААААААААААААААААААААААААААА" : "Нет");
+                resultString.AppendLine(result1);
+                resultString.AppendLine(result2);
+                resultString.AppendLine(result3);
+                resultString.AppendLine();
+                Console.WriteLine(result1);
+                Console.WriteLine(result2);
+                Console.WriteLine(result3);
                 Console.WriteLine();
+                using (System.IO.StreamWriter file = new System.IO.StreamWriter(resultFileName))
+                {
+                    file.Write(resultString.ToString());
+                }
                 iteration++;
             }
+        }
+
+        public static void TestToFunction(int variables)
+        {
+            int capacity = 2;
+            List<PostClassBooleanFunctions> classes = ProcessorClassBooleanFunctions.GetPostClasses(variables).ToList();
+            List<List<PostClassBooleanFunctions>> combinations = BooleanAlgebraHelper.GetAllCombinations<PostClassBooleanFunctions>(classes, capacity);
+            foreach(List<PostClassBooleanFunctions> combination in combinations)
+            {
+                OuterTestProcessor processor = new OuterTestProcessor(variables, combination);
+                List<BooleanFunctionTest> minimalTests = processor.MinimalTests;
+                ClassBooleanFunctions functionsOfTests = new ClassBooleanFunctions();
+                foreach(BooleanFunctionTest test in minimalTests)
+                {
+                    var starter = GetFunctionByInputs(variables, test.Inputs);
+                    functionsOfTests.AddFunction(new BooleanFunction(starter, variables));
+                }
+
+                ResearchUtilities.WriteTitle(string.Format("КЛАССЫ: {0}", string.Join(" ", combination.Select(x => x.PostPropertiesString))));
+
+                /* Показатели Omega0 */
+                if (functionsOfTests.Omega0G0Average == functionsOfTests.Omega0G1Average)
+                {
+                    Console.WriteLine("Omega0 g0 и g1 среднее: {0}", functionsOfTests.Omega0G0Average);
+                }
+                else
+                {
+                    Console.WriteLine("Omega0 g0 среднее {0}", functionsOfTests.Omega0G0Average);
+                    Console.WriteLine("Omega0 g1 среднее {0}", functionsOfTests.Omega0G1Average);
+                }
+                if (functionsOfTests.Omega0G0Min == functionsOfTests.Omega0G1Min)
+                {
+                    Console.WriteLine("Omega0 g0 и g1 наименьшее: {0}", functionsOfTests.Omega0G0Min);
+                }
+                else
+                {
+                    Console.WriteLine("Omega0 g0 наименьшее {0}", functionsOfTests.Omega0G0Min);
+                    Console.WriteLine("Omega0 g1 наименьшее {0}", functionsOfTests.Omega0G1Min);
+                }
+                if (functionsOfTests.Omega0G0Max == functionsOfTests.Omega0G1Max)
+                {
+                    Console.WriteLine("Omega0 g0 и g1 наибольшее: {0}", functionsOfTests.Omega0G0Max);
+                }
+                else
+                {
+                    Console.WriteLine("Omega0 g0 наибольшее {0}", functionsOfTests.Omega0G0Max);
+                    Console.WriteLine("Omega0 g1 наибольшее {0}", functionsOfTests.Omega0G1Max);
+                }
+                Console.WriteLine();
+
+
+                /* Показатели Omega 1*/
+                if (functionsOfTests.Omega1G0Average == functionsOfTests.Omega1G1Average)
+                {
+                    Console.WriteLine("Omega1 g0 и g1 среднее: {0}", functionsOfTests.Omega1G0Average);
+                }
+                else
+                {
+                    Console.WriteLine("Omega1 g0 среднее {0}", functionsOfTests.Omega1G0Average);
+                    Console.WriteLine("Omega1 g1 среднее {0}", functionsOfTests.Omega1G1Average);
+                }
+                if (functionsOfTests.Omega1G0Min == functionsOfTests.Omega1G1Min)
+                {
+                    Console.WriteLine("Omega1 g0 и g1 наименьшее: {0}", functionsOfTests.Omega1G0Min);
+                }
+                else
+                {
+                    Console.WriteLine("Omega1 g0 наименьшее {0}", functionsOfTests.Omega1G0Min);
+                    Console.WriteLine("Omega1 g1 наименьшее {0}", functionsOfTests.Omega1G1Min);
+                }
+                if (functionsOfTests.Omega1G0Max == functionsOfTests.Omega1G1Max)
+                {
+                    Console.WriteLine("Omega1 g0 и g1 наибольшее: {0}", functionsOfTests.Omega1G0Max);
+                }
+                else
+                {
+                    Console.WriteLine("Omega1 g0 наибольшее {0}", functionsOfTests.Omega1G0Max);
+                    Console.WriteLine("Omega1 g1 наибольшее {0}", functionsOfTests.Omega1G1Max);
+                }
+                Console.WriteLine();
+
+                /* Показатели Omega2 */
+                if (functionsOfTests.Omega2G0Average == functionsOfTests.Omega2G1Average)
+                {
+                    Console.WriteLine("Omega2 g0 и g1 среднее: {0}", functionsOfTests.Omega2G0Average);
+                }
+                else
+                {
+                    Console.WriteLine("Omega2 g0 среднее {0}", functionsOfTests.Omega2G0Average);
+                    Console.WriteLine("Omega2 g1 среднее {0}", functionsOfTests.Omega2G1Average);
+                }
+                if (functionsOfTests.Omega2G0Min == functionsOfTests.Omega2G1Min)
+                {
+                    Console.WriteLine("Omega2 g0 и g1 наименьшее: {0}", functionsOfTests.Omega2G0Min);
+                }
+                else
+                {
+                    Console.WriteLine("Omega2 g0 наименьшее {0}", functionsOfTests.Omega2G0Min);
+                    Console.WriteLine("Omega2 g1 наименьшее {0}", functionsOfTests.Omega2G1Min);
+                }
+                if (functionsOfTests.Omega2G0Max == functionsOfTests.Omega2G1Max)
+                {
+                    Console.WriteLine("Omega2 g0 и g1 наибольшее: {0}", functionsOfTests.Omega2G0Max);
+                }
+                else
+                {
+                    Console.WriteLine("Omega2 g0 наибольшее {0}", functionsOfTests.Omega2G0Max);
+                    Console.WriteLine("Omega2 g1 наибольшее {0}", functionsOfTests.Omega2G1Max);
+                }
+                Console.WriteLine();
+
+                /* Показатели Omega3 */
+                if (functionsOfTests.Omega3G0Average == functionsOfTests.Omega3G1Average)
+                {
+                    Console.WriteLine("Omega3 g0 и g1 среднее: {0}", functionsOfTests.Omega3G0Average);
+                }
+                else
+                {
+                    Console.WriteLine("Omega3 g0 среднее {0}", functionsOfTests.Omega3G0Average);
+                    Console.WriteLine("Omega3 g1 среднее {0}", functionsOfTests.Omega3G1Average);
+                }
+                if (functionsOfTests.Omega3G0Min == functionsOfTests.Omega3G1Min)
+                {
+                    Console.WriteLine("Omega3 g0 и g1 наименьшее: {0}", functionsOfTests.Omega3G0Min);
+                }
+                else
+                {
+                    Console.WriteLine("Omega3 g0 наименьшее {0}", functionsOfTests.Omega3G0Min);
+                    Console.WriteLine("Omega3 g1 наименьшее {0}", functionsOfTests.Omega3G1Min);
+                }
+                if (functionsOfTests.Omega3G0Max == functionsOfTests.Omega3G1Max)
+                {
+                    Console.WriteLine("Omega3 g0 и g1 наибольшее: {0}", functionsOfTests.Omega3G0Max);
+                }
+                else
+                {
+                    Console.WriteLine("Omega3 g0 наибольшее {0}", functionsOfTests.Omega3G0Max);
+                    Console.WriteLine("Omega3 g1 наибольшее {0}", functionsOfTests.Omega3G1Max);
+                }
+                Console.WriteLine();
+
+                /* Показатели повторности */
+                Console.WriteLine("Повторность средняя: {0}", functionsOfTests.RepetivityAverage);
+                Console.WriteLine("Повторность наименьшая: {0}", functionsOfTests.RepetivityMin);
+                Console.WriteLine("Повторность наибольшая: {0}", functionsOfTests.RepetivityMax);
+
+                Console.WriteLine();
+            }
+        }
+
+        private static bool[] GetFunctionByInputs(int variables, List<bool[]> inputs)
+        {
+            List<bool[]> allInputs = BooleanAlgebraHelper.GetAllInputs(variables);
+            List<bool> result = new List<bool>();
+            foreach(bool[] input in allInputs)
+            {
+                bool[] contains = inputs.FirstOrDefault(x => BooleanAlgebraHelper.CollectionsAreEqualOrdered<bool>(x, input));
+                result.Add(contains != null);
+            }
+            return result.ToArray();
         }
     }
 }

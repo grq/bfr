@@ -11,7 +11,7 @@ namespace KIMath.ResearchConsole
     {
         static void Main(string[] args)
         {
-            MinimalTestsResearch.Experiment(3, 3);
+            MinimalTestsResearch.TestToFunction(3);
             //string[] intersection = new string[] { "A", "B", "C" };
             //string[] array1 = new string[] { "C", "A", "B", "Q", "W", "E", "R", "T", "Y", "U" };
             //string[] array2 = new string[] { "B", "C", "A", "I", "O", "P", "S", "D", "F", "G" };

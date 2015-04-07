@@ -362,28 +362,6 @@ namespace KIMath.BooleanAlgebra
             return result;
         }
 
-        static public List<T> GetIntersection<T>(IEnumerable<IEnumerable<T>> sets)
-        {
-            List<T> result = new List<T>();
-            foreach (IEnumerable<T> set in sets)
-            {
-                List<IEnumerable<T>> otherSets = sets.Except(new List<IEnumerable<T>>() { set }).ToList();
-                foreach (T element in set)
-                {
-                    if (!result.Contains(element))
-                    {
-                        bool add = true;
-                        otherSets.ForEach(x => add = add && x.Contains(element));
-                        if (add)
-                        {
-                            result.Add(element);
-                        }
-                    }
-                }
-            }
-            return result;
-        }
-
         #endregion
 
         #region Private Methods
